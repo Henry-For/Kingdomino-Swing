@@ -42,17 +42,17 @@ public class Principal extends JFrame implements ActionListener {
 		
 	
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 500, 500);
+		setBounds(100, 100, 1920, 1080);
 		sala = new Sala();
 		sala.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(sala);
+		//setContentPane(sala);
 		sala.setLayout(null);
 		
 	
 		juego = new Juego();
 		juego.setBorder(new EmptyBorder(5, 5, 5, 5));
 		juego.setLayout(new BorderLayout(0, 0));
-		
+		setContentPane(juego);
 	}
 	
 	@Override
