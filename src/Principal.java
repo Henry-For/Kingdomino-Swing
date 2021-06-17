@@ -1,0 +1,64 @@
+import java.applet.AudioClip;
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+public class Principal extends JFrame implements ActionListener {
+
+	private JPanel sala;
+	private JPanel juego;
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Principal frame = new Principal();
+					frame.setVisible(true);
+					
+					
+					
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Principal() {
+		
+	
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 500, 500);
+		sala = new Sala();
+		sala.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(sala);
+		sala.setLayout(null);
+		
+	
+		juego = new Juego();
+		juego.setBorder(new EmptyBorder(5, 5, 5, 5));
+		juego.setLayout(new BorderLayout(0, 0));
+		
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		
+		setContentPane(juego);
+		
+	}
+}
