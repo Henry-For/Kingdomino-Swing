@@ -11,7 +11,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import javafx.scene.control.Cell;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;
