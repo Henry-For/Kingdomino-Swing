@@ -13,8 +13,8 @@ import java.awt.event.MouseEvent;
 
 public class Principal extends JFrame implements ActionListener {
 
-	private JPanel sala;
-	private JPanel juego;
+	private Sala sala = new Sala();
+	private Juego juego = new Juego();
 	/**
 	 * Launch the application.
 	 */
@@ -24,9 +24,6 @@ public class Principal extends JFrame implements ActionListener {
 				try {
 					Principal frame = new Principal();
 					frame.setVisible(true);
-					
-					
-					
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -43,16 +40,25 @@ public class Principal extends JFrame implements ActionListener {
 	
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1920, 1080);
-		sala = new Sala();
+		//sala = new Sala();
 		sala.setBorder(new EmptyBorder(5, 5, 5, 5));
 		//setContentPane(sala);
 		sala.setLayout(null);
+		add(sala,BorderLayout.CENTER);
+		sala.botonIniciarJuegoActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setContentPane(juego);
+				//pack();
+			}
+		});
 		
-	
-		juego = new Juego();
+		//juego = new Juego();
 		juego.setBorder(new EmptyBorder(5, 5, 5, 5));
 		juego.setLayout(new BorderLayout(0, 0));
-		setContentPane(juego);
+		add(juego,BorderLayout.CENTER);
+		setContentPane(sala);
+		//pack();
 	}
 	
 	@Override

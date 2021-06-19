@@ -11,7 +11,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeListener;
 
-import javafx.scene.image.Image;
 
 import javax.swing.event.ChangeEvent;
 import java.awt.event.FocusAdapter;
@@ -23,7 +22,7 @@ public class Sala extends JPanel {
 	private JTextField txtJugador_2;
 	private JTextField txtJugador_3;
 	private JTextField txtJugador_4;
-
+	private JButton botonIniciarJuego = new JButton("COMENZAR JUEGO");
 	/**
 	 * Create the panel.
 	 */
@@ -34,14 +33,14 @@ public class Sala extends JPanel {
 		setForeground(Color.YELLOW);
 		setLayout(null);
 		
-		JButton btnNewButton = new JButton("COMENZAR JUEGO");
+		//JButton btnNewButton = new JButton("COMENZAR JUEGO");
 		
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnNewButton.setBounds(273, 250, 146, 39);
-		add(btnNewButton);
+//		btnNewButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//			}
+//		});
+		botonIniciarJuego.setBounds(273, 250, 146, 39);
+		add(botonIniciarJuego);
 		
 		JLabel lblNewLabel = new JLabel("Selecione la cantidad de jugadores : ( 2 - 4) ");
 		lblNewLabel.setBounds(10, 33, 242, 24);
@@ -126,6 +125,10 @@ public class Sala extends JPanel {
 		
 		
 	    }
-
+	
+	public void botonIniciarJuegoActionListener(ActionListener listener) {
+		botonIniciarJuego.addActionListener(listener);
+	}
+	
 	}
 

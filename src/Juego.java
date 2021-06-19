@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import javafx.scene.control.Cell;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;
