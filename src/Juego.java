@@ -29,6 +29,10 @@ public class Juego extends JPanel {
 	private JTable pilaAct;
 	private JTable pilaSig;
 	private Integer cantJugadores;
+	private Casillero[] seleccionado = null;
+	//private int cantClicks = 0;
+	//private boolean mutex = false;
+	private boolean enTablero = false;
 
 	public Juego(Integer cantJugadores) {
 		this.cantJugadores = cantJugadores;
@@ -58,18 +62,22 @@ public class Juego extends JPanel {
 	private JTable crearPila(int x, int y) {
 		DefaultTableModel model = new DefaultTableModel(0, 2);
 		JTable table = new JTable(model);
-		ImageIcon icon = new ImageIcon(getClass().getResource("PruebaCasilla1.jpg"));
-		icon = escalarImagen(icon, 90,90);
+		Casillero reyRojo = new Casillero("Fichas/castillo_rojo.jpg");
+		Casillero arena = new Casillero("PruebaCasilla1.jpg");
+		Casillero bosque = new Casillero("casillas/1.jpg");
+		Casillero agua = new Casillero("casillas/2.jpg");
+//		icon = escalarImagen(icon, 90,90);
+//		icon2 = escalarImagen(icon2, 90,90);
 		table.setRowSelectionAllowed(false);
 		table.setRowHeight(90);
 		table.getColumnModel().getColumn(0).setCellRenderer(new ButtonCell());
 		table.getColumnModel().getColumn(1).setCellRenderer(new ButtonCell());
 		table.getColumnModel().getColumn(0).setPreferredWidth(90);
 		table.getColumnModel().getColumn(1).setPreferredWidth(90);
-		model.addRow(new Object[] { icon, "test" });
-		model.addRow(new Object[] { null, icon });
-		model.addRow(new Object[] { icon, "test3" });
-		model.addRow(new Object[] { icon, "test3" });
+		model.addRow(new Object[] { agua, bosque});
+		model.addRow(new Object[] { reyRojo, arena });
+		model.addRow(new Object[] { arena, "test3" });
+		model.addRow(new Object[] { arena, "test3" });
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.setBounds(x, y, 180, 360);/* ATENCION !!! AL CAMBIAR LA INTERFAZ ESTO SE CAMBIA */
 		table.enable(false);
@@ -77,10 +85,18 @@ public class Juego extends JPanel {
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
+				
 				int row = table.rowAtPoint(event.getPoint());
 				int col = table.columnAtPoint(event.getPoint());
+				
+				//int col1 = col == 0 ? 1 : 0;
+				if(!enTablero)
+					agregarFicha((Casillero)table.getValueAt(row, 0),(Casillero)table.getValueAt(row, 1));
+				else
+					System.out.println("No se puede");
 				System.out.println(row + " " + col);
 				System.out.println(table.getValueAt(row, col));
+				System.out.println(seleccionado);
 			}
 		});
 
@@ -119,6 +135,48 @@ public class Juego extends JPanel {
 			public void mouseClicked(MouseEvent event) {
 				int row = table.rowAtPoint(event.getPoint());
 				int col = table.columnAtPoint(event.getPoint());
+				
+					
+				if(table.getValueAt(row,col) == null) {
+					if(enTablero) {
+						int x = seleccionado[0].getPosicion().getX();
+						int y = seleccionado[0].getPosicion().getY();
+						
+						if(	((x+1 == row || x-1 == row) && (y == col)) || 
+							((y+1 == col || y-1 == col) && (x == row))) {
+							
+							if(x != row) {
+								double angulo;
+								if(col > y) {
+									angulo = 270;
+								}
+								else {
+									angulo = 90;
+								}
+								seleccionado[0].rotate(angulo);
+								seleccionado[1].rotate(angulo);
+								table.setValueAt(seleccionado[0], x, y);
+							}	
+							table.setValueAt(seleccionado[1], row, col);
+						}
+						else {
+							System.out.println("Error, no son consecutivas");
+							table.setValueAt(null,x,y);
+						}
+						seleccionado = null;
+						enTablero = false;
+					}
+					else
+						if(seleccionado != null) {
+							seleccionado[0].setPosicion(new Posicion(row,col));
+							table.setValueAt(seleccionado[0], row, col);
+							enTablero = true;
+						}					
+				}
+				else {
+					System.out.println("Casillero ocupada");
+				}
+					
 				System.out.println(row + " " + col);
 				System.out.println(table.getValueAt(row, col));
 			}
@@ -231,5 +289,9 @@ public class Juego extends JPanel {
 	
 	public ImageIcon escalarImagen(Image imagen, int width, int heigth) {
 		return new ImageIcon(imagen.getScaledInstance(90, 90, java.awt.Image.SCALE_SMOOTH));
+	}
+	
+	public void agregarFicha(Casillero c1,Casillero c2) {
+		this.seleccionado = new Casillero[]{c1,c2};
 	}
 }
