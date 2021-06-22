@@ -6,9 +6,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import javax.swing.JTable;
+import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
@@ -16,6 +19,8 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.Font;
 import java.awt.Graphics2D;
 
@@ -33,15 +38,19 @@ public class Juego extends JPanel {
 	//private int cantClicks = 0;
 	//private boolean mutex = false;
 	private boolean enTablero = false;
+	private ArrayList<Jugador> jugadores;
+	private Mazo mazo;
 
-	public Juego(Integer cantJugadores) {
-		this.cantJugadores = cantJugadores;
+	public Juego(ArrayList<Jugador> jugadores, Mazo mazo) {
+		this.jugadores = jugadores;
+		cantJugadores = jugadores.size();
 		System.out.println(cantJugadores);
 
 		setLayout(null);
 		setBounds(100, 100, 1920, 1080);
+		this.mazo = mazo;
 	}
-	
+
 	public void crearJuego() {
 
 		crearTablas();
@@ -60,24 +69,14 @@ public class Juego extends JPanel {
 
 	@SuppressWarnings("deprecation")
 	private JTable crearPila(int x, int y) {
-		DefaultTableModel model = new DefaultTableModel(0, 2);
+		DefaultTableModel model = new DefaultTableModel(4, 2);
 		JTable table = new JTable(model);
-		Casillero reyRojo = new Casillero("Fichas/castillo_rojo.jpg");
-		Casillero arena = new Casillero("PruebaCasilla1.jpg");
-		Casillero bosque = new Casillero("casillas/1.jpg");
-		Casillero agua = new Casillero("casillas/2.jpg");
-//		icon = escalarImagen(icon, 90,90);
-//		icon2 = escalarImagen(icon2, 90,90);
 		table.setRowSelectionAllowed(false);
 		table.setRowHeight(90);
 		table.getColumnModel().getColumn(0).setCellRenderer(new ButtonCell());
 		table.getColumnModel().getColumn(1).setCellRenderer(new ButtonCell());
 		table.getColumnModel().getColumn(0).setPreferredWidth(90);
 		table.getColumnModel().getColumn(1).setPreferredWidth(90);
-		model.addRow(new Object[] { agua, bosque});
-		model.addRow(new Object[] { reyRojo, arena });
-		model.addRow(new Object[] { arena, "test3" });
-		model.addRow(new Object[] { arena, "test3" });
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.setBounds(x, y, 180, 360);/* ATENCION !!! AL CAMBIAR LA INTERFAZ ESTO SE CAMBIA */
 		table.enable(false);
@@ -85,13 +84,13 @@ public class Juego extends JPanel {
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
-				
+
 				int row = table.rowAtPoint(event.getPoint());
 				int col = table.columnAtPoint(event.getPoint());
-				
+
 				//int col1 = col == 0 ? 1 : 0;
-				if(!enTablero)
-					agregarFicha((Casillero)table.getValueAt(row, 0),(Casillero)table.getValueAt(row, 1));
+				if (!enTablero && table.getValueAt(row, col) != null)
+					agregarFicha((Casillero) table.getValueAt(row, 0), (Casillero) table.getValueAt(row, 1));
 				else
 					System.out.println("No se puede");
 				System.out.println(row + " " + col);
@@ -104,11 +103,9 @@ public class Juego extends JPanel {
 	}
 
 	@SuppressWarnings("deprecation")
-	private JTable crearTabla(int x, int y) {
+	private JTable crearTabla(int x, int y, Color color, Jugador jugador) {
 		DefaultTableModel model = new DefaultTableModel(5, 5);
 		JTable table = new JTable(model);
-		ImageIcon icon = new ImageIcon(getClass().getResource("PruebaCasilla2.jpg"));
-		icon = escalarImagen(icon, 90,90);
 		table.setRowSelectionAllowed(false);
 		table.setRowHeight(90);
 		table.getColumnModel().getColumn(0).setCellRenderer(new ButtonCell());
@@ -121,13 +118,9 @@ public class Juego extends JPanel {
 		table.getColumnModel().getColumn(2).setPreferredWidth(90);
 		table.getColumnModel().getColumn(3).setPreferredWidth(90);
 		table.getColumnModel().getColumn(4).setPreferredWidth(90);
-		/*model.addRow(new Object[] { icon, "test", icon });
-		model.addRow(new Object[] { null, icon, icon });
-		model.addRow(new Object[] { icon, "test3", icon });
-		model.addRow(new Object[] { icon, "test3", icon });
-		model.addRow(new Object[] { icon, "test3", icon });*/
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.setBounds(x, y, 450, 450);
+		table.setBorder(new MatteBorder(2, 2, 2, 2, color));
 		table.enable(false);
 
 		table.addMouseListener(new MouseAdapter() {
@@ -135,48 +128,76 @@ public class Juego extends JPanel {
 			public void mouseClicked(MouseEvent event) {
 				int row = table.rowAtPoint(event.getPoint());
 				int col = table.columnAtPoint(event.getPoint());
-				
-					
-				if(table.getValueAt(row,col) == null) {
-					if(enTablero) {
+
+				if (table.getValueAt(row, col) == null && jugador.getTurno()) {
+					if (enTablero) {
+						
+						seleccionado[1].setPosicion(new Posicion(row,col));
+						
 						int x = seleccionado[0].getPosicion().getX();
 						int y = seleccionado[0].getPosicion().getY();
 						
-						if(	((x+1 == row || x-1 == row) && (y == col)) || 
-							((y+1 == col || y-1 == col) && (x == row))) {
-							
-							if(x != row) {
-								double angulo;
-								if(col > y) {
+						if(x == row) {
+							if(y > col) {
+								Casillero aux = seleccionado[0];
+								seleccionado[0] = seleccionado[1];
+								seleccionado[1] = aux;
+							}							
+						} else {
+							if(x > row) {
+								Casillero aux = seleccionado[0];
+								seleccionado[0] = seleccionado[1];
+								seleccionado[1] = aux;
+							}
+						}
+						
+						x = seleccionado[0].getPosicion().getX();
+						y = seleccionado[0].getPosicion().getY();
+						row = seleccionado[1].getPosicion().getX();
+						col = seleccionado[1].getPosicion().getY();
+
+						Ficha f = new Ficha(1, seleccionado);
+						Posicion pos1 = new Posicion(x, y);
+						Posicion pos2 = new Posicion(row, col);
+						if ((((x + 1 == row || x - 1 == row) && (y == col)) || ((y + 1 == col || y - 1 == col) && (x == row))) && jugador.getTablero().posicionarFicha(f, pos1, pos2)) {
+
+							double angulo = 0;
+							if (col == y) {
+								if (x > row) {
+									angulo = 90;
+								} else {
 									angulo = 270;
 								}
-								else {
-									angulo = 90;
+							} else {
+								if (y > col) {
+									angulo = 0;
+								} else {
+									angulo = 180;
 								}
-								seleccionado[0].rotate(angulo);
-								seleccionado[1].rotate(angulo);
-								table.setValueAt(seleccionado[0], x, y);
-							}	
+							}
+							System.out.println(angulo);
+							seleccionado[0].rotate(angulo);
+							seleccionado[1].rotate(angulo);
+							table.setValueAt(seleccionado[0], x, y);
 							table.setValueAt(seleccionado[1], row, col);
-						}
-						else {
+							jugador.setTurno(false);
+							jugadores.get(1).setTurno(true);
+						} else {
 							System.out.println("Error, no son consecutivas");
-							table.setValueAt(null,x,y);
+							table.setValueAt(null, x, y);
+							table.setValueAt(null, row, col);
 						}
 						seleccionado = null;
 						enTablero = false;
+					} else if (seleccionado != null && table.getValueAt(row, col) == null) {
+						seleccionado[0].setPosicion(new Posicion(row, col));
+						table.setValueAt(seleccionado[0], row, col);
+						enTablero = true;
 					}
-					else
-						if(seleccionado != null) {
-							seleccionado[0].setPosicion(new Posicion(row,col));
-							table.setValueAt(seleccionado[0], row, col);
-							enTablero = true;
-						}					
-				}
-				else {
+				} else {
 					System.out.println("Casillero ocupada");
 				}
-					
+
 				System.out.println(row + " " + col);
 				System.out.println(table.getValueAt(row, col));
 			}
@@ -185,14 +206,93 @@ public class Juego extends JPanel {
 		return table;
 	}
 
+	private void crearTablas() {
+		System.out.println(this.cantJugadores);
+		table1 = crearTabla(10, 11, Color.RED, jugadores.get(0));
+		jugadores.get(0).setTurno(true);
+		jugadores.get(0).getTablero().agregarCastillo("Fichas/castillo_rojo.jpg");
+		add(table1);
+		agregarCasillero(table1, 2, 2, jugadores.get(0).getTablero().getCastillo(), 0);
+
+		JLabel nombreJugador1 = new JLabel(jugadores.get(0).getNickName());
+		nombreJugador1.setFont(new Font("Sylfaen", Font.PLAIN, 19));
+		nombreJugador1.setBounds(465, 460, 241, 32);
+		add(nombreJugador1);
+
+		table2 = crearTabla(1460, 11, Color.BLUE, jugadores.get(1));
+		add(table2);
+		jugadores.get(1).getTablero().agregarCastillo("Fichas/castillo_azul.jpg");
+		agregarCasillero(table2, 2, 2, jugadores.get(1).getTablero().getCastillo(), 0);
+
+		JLabel nombreJugador2 = new JLabel(jugadores.get(1).getNickName());
+		nombreJugador2.setFont(new Font("Sylfaen", Font.PLAIN, 19));
+		nombreJugador2.setBounds(1380, 460, 241, 32);
+		add(nombreJugador2);
+
+		if (this.cantJugadores >= 3) {
+			table3 = crearTabla(1460, 560, Color.GREEN, jugadores.get(2));
+			add(table3);
+			jugadores.get(2).getTablero().agregarCastillo("Fichas/castillo_verde.jpg");
+			agregarCasillero(table3, 2, 2, jugadores.get(2).getTablero().getCastillo(), 0);
+
+			JLabel nombreJugador3 = new JLabel(jugadores.get(2).getNickName());
+			nombreJugador3.setFont(new Font("Sylfaen", Font.PLAIN, 19));
+			nombreJugador3.setBounds(1380, 540, 241, 32);
+			add(nombreJugador3);
+		}
+
+		if (this.cantJugadores == 4) {
+			table4 = crearTabla(10, 560, Color.YELLOW, jugadores.get(3));
+			add(table4);
+			jugadores.get(3).getTablero().agregarCastillo("Fichas/castillo_amarillo.jpg");
+			agregarCasillero(table4, 2, 2, jugadores.get(3).getTablero().getCastillo(), 0);
+
+			JLabel nombreJugador4 = new JLabel(jugadores.get(3).getNickName());
+			nombreJugador4.setFont(new Font("Sylfaen", Font.PLAIN, 19));
+			nombreJugador4.setBounds(465, 540, 241, 32);
+			add(nombreJugador4);
+		}
+
+		pilaAct = crearPila(720, 130);
+		pilaSig = crearPila(1020, 130);
+
+		add(pilaAct);
+		add(pilaSig);
+
+		setearPila(pilaAct, mazo.devolverFichas());
+		setearPila(pilaSig, mazo.devolverFichas());
+		setearPila(pilaSig, mazo.devolverFichas());
+		setearPila(pilaSig, mazo.devolverFichas());
+		setearPila(pilaAct, mazo.devolverFichas());
+	}
+
+	public void setearPila(JTable tabla, List<Ficha> fichasPila) {
+		for (int i = 0; i < fichasPila.size(); i++) {
+			agregarCasillero(tabla, i, 0, fichasPila.get(i).getCasilleros()[0], 0);
+			agregarCasillero(tabla, i, 1, fichasPila.get(i).getCasilleros()[1], 0);
+		}
+	}
+
 	public void agregarCasillero(JTable tabla, int x, int y, Casillero casillero, double rotacion) {
-		if(casillero == null) {
+		if (casillero == null) {
 			tabla.getModel().setValueAt(null, x, y);
 			return;
 		}
-		
+
 		casillero.rotate(rotacion);
 		tabla.getModel().setValueAt(casillero, x, y);
+	}
+
+	public ImageIcon escalarImagen(ImageIcon imagen, int width, int heigth) {
+		return new ImageIcon(imagen.getImage().getScaledInstance(90, 90, java.awt.Image.SCALE_SMOOTH));
+	}
+
+	public ImageIcon escalarImagen(Image imagen, int width, int heigth) {
+		return new ImageIcon(imagen.getScaledInstance(90, 90, java.awt.Image.SCALE_SMOOTH));
+	}
+
+	public void agregarFicha(Casillero c1, Casillero c2) {
+		this.seleccionado = new Casillero[] { c1, c2 };
 	}
 
 	@SuppressWarnings("serial")
@@ -215,7 +315,7 @@ public class Juego extends JPanel {
 				btn.setIcon((Icon) value);
 				btn.setText(null);
 			} else if (value instanceof Casillero) {
-				ImageIcon icon = escalarImagen(((Casillero) value).getImagen(), 90,90);
+				ImageIcon icon = escalarImagen(((Casillero) value).getImagen(), 90, 90);
 				btn.setIcon(icon);
 				btn.setText(null);
 			} else {
@@ -224,74 +324,5 @@ public class Juego extends JPanel {
 			}
 			return btn;
 		}
-	}
-
-	private void crearTablas() {
-		Casillero reyRojo = new Casillero("Fichas/castillo_rojo.jpg");
-		System.out.println(this.cantJugadores);
-		table1 = crearTabla(10, 11);
-		add(table1);
-		Casillero reyRojo2 = new Casillero("Fichas/castillo_rojo.jpg");
-		agregarCasillero(table1, 2, 2, reyRojo, 0);
-		agregarCasillero(table1, 4, 4, reyRojo2, 180);
-		agregarCasillero(table1, 4, 3, reyRojo2, 90);
-		agregarCasillero(table1, 4, 2, reyRojo2, -90);
-		
-		JLabel nombreJugador1 = new JLabel("Jugador 1");
-		nombreJugador1.setFont(new Font("Sylfaen", Font.PLAIN, 19));
-		nombreJugador1.setBounds(465, 435, 241, 32);
-		add(nombreJugador1);
-
-		table2 = crearTabla(1460, 11);
-		add(table2);
-		Casillero reyAzul = new Casillero("Fichas/castillo_azul.jpg");
-		agregarCasillero(table2, 2, 2, reyAzul, 0);
-		
-		JLabel nombreJugador2 = new JLabel("Jugador 2");
-		nombreJugador2.setFont(new Font("Sylfaen", Font.PLAIN, 19));
-		nombreJugador2.setBounds(1380, 435, 241, 32);
-		add(nombreJugador2);
-
-		if (this.cantJugadores >= 3) {
-			table3 = crearTabla(1460, 560);
-			add(table3);
-			Casillero reyVerde = new Casillero("Fichas/castillo_verde.jpg");
-			agregarCasillero(table3, 2, 2, reyVerde, 0);
-			
-			JLabel nombreJugador3 = new JLabel("Jugador 3");
-			nombreJugador3.setFont(new Font("Sylfaen", Font.PLAIN, 19));
-			nombreJugador3.setBounds(1380, 560, 241, 32);
-			add(nombreJugador3);
-		}
-
-		if (this.cantJugadores == 4) {
-			table4 = crearTabla(10, 560);
-			add(table4);
-			Casillero reyAmarillo = new Casillero("Fichas/castillo_amarillo.jpg");
-			agregarCasillero(table4, 2, 2, reyAmarillo, 0);
-			
-			JLabel nombreJugador4 = new JLabel("Jugador 4");
-			nombreJugador4.setFont(new Font("Sylfaen", Font.PLAIN, 19));
-			nombreJugador4.setBounds(465, 560, 241, 32);
-			add(nombreJugador4);
-		}
-
-		pilaAct = crearPila(720, 130);
-		pilaSig = crearPila(1020, 130);
-
-		add(pilaAct);
-		add(pilaSig);
-	}
-	
-	public ImageIcon escalarImagen(ImageIcon imagen, int width, int heigth) {
-		return new ImageIcon(imagen.getImage().getScaledInstance(90, 90, java.awt.Image.SCALE_SMOOTH));
-	}
-	
-	public ImageIcon escalarImagen(Image imagen, int width, int heigth) {
-		return new ImageIcon(imagen.getScaledInstance(90, 90, java.awt.Image.SCALE_SMOOTH));
-	}
-	
-	public void agregarFicha(Casillero c1,Casillero c2) {
-		this.seleccionado = new Casillero[]{c1,c2};
 	}
 }

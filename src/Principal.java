@@ -3,6 +3,7 @@ import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -14,6 +15,7 @@ public class Principal extends JFrame implements ActionListener {
 
 	private Sala sala;
 	private Juego juego;
+	private ArrayList<Jugador> jugadores = new ArrayList<Jugador>();
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -54,7 +56,18 @@ public class Principal extends JFrame implements ActionListener {
 	}
 	
 	public void crearJuego() {
-		this.juego = new Juego(sala.getCantJugadores());
+		jugadores.add(new Jugador(sala.getTxtJugador_1().getText()));
+		jugadores.add(new Jugador(sala.getTxtJugador_2().getText()));
+		if(sala.getTxtJugador_3().isVisible())
+			jugadores.add(new Jugador(sala.getTxtJugador_3().getText()));
+		if(sala.getTxtJugador_4().isVisible())
+			jugadores.add(new Jugador(sala.getTxtJugador_4().getText()));
+		
+		Archivo archivo = new Archivo("fichas.txt");
+		Mazo mazo = archivo.generarMazo();
+
+		this.juego = new Juego(jugadores, mazo);
+		
 		juego.crearJuego();
 		juego.setBorder(new EmptyBorder(5, 5, 5, 5));
 		juego.setLayout(new BorderLayout(0, 0));

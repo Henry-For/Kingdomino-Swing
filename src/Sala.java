@@ -14,9 +14,11 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.ArrayList;
 import java.awt.Color;
 
 public class Sala extends JPanel {
+
 	private JTextField txtJugador_1;
 	private JTextField txtJugador_2;
 	private JTextField txtJugador_3;
@@ -120,6 +122,22 @@ public class Sala extends JPanel {
 	
 	public void cargarVariableCantJugadores(Integer cant) {
 		this.cantJugadores= cant;
+	}
+	
+	public JTextField getTxtJugador_1() {
+		return txtJugador_1;
+	}
+
+	public JTextField getTxtJugador_2() {
+		return txtJugador_2;
+	}
+
+	public JTextField getTxtJugador_3() {
+		return txtJugador_3;
+	}
+
+	public JTextField getTxtJugador_4() {
+		return txtJugador_4;
 	}
 
 }
