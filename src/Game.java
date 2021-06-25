@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JTable;
@@ -20,9 +19,9 @@ public class Game {
 	private boolean enTablero;
 	private boolean enPila;
 	
-	public Game(ArrayList<Jugador> jugadores, Mazo mazo) {
+	public Game(ArrayList<Jugador> jugadores) {
 		this.jugadores = jugadores;
-		this.mazo = mazo;
+		this.mazo = Archivo.generarMazo("src/fichas.txt");
 		this.pilaDeRoboSiguiente = new PilaDeRobo();
 	}
 
@@ -43,7 +42,7 @@ public class Game {
 */	
 	// Se encarga de asignar los primeros turnos de manera aleatoria. 
 	
-	public List<Jugador> inicializar(JTable actual,JTable siguiente) {
+	public List<Jugador> inicializar(JTable siguiente) {
 		this.mazo.mezclarMazo();
 		
 		pilaDeRoboSiguiente.setTable(siguiente);
@@ -78,7 +77,7 @@ public class Game {
 	
 	public void agregarFicha(Jugador j,Ficha f) {
 		pilaDeRoboSiguiente.asignarFicha(f, j);
-		System.out.println("El jugador " + j.getNickName() + " seleccionó una ficha");
+		System.out.println("El jugador " + j.getNickName() + " seleccionó la ficha " + pilaDeRoboSiguiente.getFichasRonda().ceilingKey(f));
 		this.turno++;
 		j.setTurno(false);
 		
@@ -90,9 +89,10 @@ public class Game {
 	
 	public void cambiarRonda(JTable actual,JTable siguiente) {
 		
-		System.out.println("\n------Cambio de ronda-------\n");
+		if(this.ronda != 0)
+			System.out.println("\n--------Fin ronda " + this.ronda +"----------\n");
 		this.ronda++;
-		
+		System.out.println("\n------Comienzo ronda " + this.ronda +"-------\n");
 		if(this.ronda == Game.CANT_RONDAS) {
 			System.out.println("FIN JUEGO");
 			return;

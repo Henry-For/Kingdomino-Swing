@@ -1,23 +1,17 @@
 import javax.swing.JPanel;
-import javax.swing.AbstractCellEditor;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import javax.swing.JTable;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.awt.Font;
 
 public class Juego extends JPanel {
@@ -31,7 +25,7 @@ public class Juego extends JPanel {
 	private JTable pilaSig = null;
 	private Integer cantJugadores;
 	//private Casillero[] seleccionado = null;
-	private boolean seleccion = false;
+	//private boolean seleccion = false;
 	//private List<Jugador> jugadoresRonda;
 	//private boolean enTablero = false;
 	//private boolean enPila = false;
@@ -43,11 +37,7 @@ public class Juego extends JPanel {
 		this.jugadores = jugadores;
 		cantJugadores = jugadores.size();
 		
-		Archivo archivo = new Archivo("src/fichas.txt");
-		
-		this.logicaJuego = new Game(jugadores,mazo);
-		
-		System.out.println(cantJugadores);
+		this.logicaJuego = new Game(jugadores);
 
 		setLayout(null);
 		setBounds(100, 100, 1920, 1080);
@@ -73,7 +63,7 @@ public class Juego extends JPanel {
 		add(this.pilaSig);
 		//this.pilaSig = crearPila(1020, 130);
 		
-		this.jugadores = this.logicaJuego.inicializar(pilaAct,pilaSig);
+		this.jugadores = this.logicaJuego.inicializar(pilaSig);
 		//this.enPila = true;
 		//this.jugadoresRonda = this.logicaJuego.devolverJugadores();
 	}
@@ -109,6 +99,11 @@ public class Juego extends JPanel {
 				jugadorActual = logicaJuego.devolverTurno();
 				
 
+				if(jugador.equals(jugadorActual)) {
+					System.out.println("No es tu tablero");
+					return;
+				}
+				
 				if(logicaJuego.getEnTablero()) {
 					System.out.println("No seleccionaste ficha todavia");
 					return;
@@ -161,7 +156,7 @@ public class Juego extends JPanel {
 						Posicion pos2 = new Posicion(row, col);
 						if ((((x + 1 == row || x - 1 == row) && (y == col)) || ((y + 1 == col || y - 1 == col) && (x == row))) && jugador.getTablero().posicionarFicha(f, pos1, pos2)) {
 
-							System.out.println(angulo);
+							//System.out.println(angulo);
 							c1.rotate(angulo);
 							c2.rotate(angulo);
 							table.setValueAt(c1, x, y);
@@ -169,8 +164,9 @@ public class Juego extends JPanel {
 							//jugadorActual.setTurno(false);
 							//jugadores.get(1).setTurno(true);
 							logicaJuego.activarPila();
-							//enPila = true;
-							//enTablero = false;
+							
+							System.out.println("El jugador " + jugadorActual.getNickName() + " inserto su ficha");
+							System.out.println("Ahora te toca seleccionar una ficha de la pila de robo!");
 						} else {
 							System.out.println("Error, no son consecutivas");
 							table.setValueAt(null, x, y);
@@ -194,8 +190,8 @@ public class Juego extends JPanel {
 //					}
 //					//logicajuego.cambiarronda();
 //				}
-				System.out.println(row + " " + col);
-				System.out.println(table.getValueAt(row, col));
+				//System.out.println(row + " " + col);
+				//System.out.println(table.getValueAt(row, col));
 			}
 		});
 
@@ -203,7 +199,7 @@ public class Juego extends JPanel {
 	}
 
 	private void crearTablas() {
-		System.out.println(this.cantJugadores);
+		//System.out.println(this.cantJugadores);
 		table1 = crearTabla(10, 11, Color.RED, jugadores.get(0));
 		jugadores.get(0).setTurno(true);
 		jugadores.get(0).getTablero().agregarCastillo("Fichas/castillo_rojo.jpg");
@@ -340,15 +336,15 @@ public class Juego extends JPanel {
 					agregarFicha(((PilaModel)table.getModel()).getFichaAt(row,col));
 					//agregarFicha((Casillero) table.getValueAt(row, 0), (Casillero) table.getValueAt(row, 1),row);
 				else
-					System.out.println("No se puede");
+					System.out.println("Pila no accesible todavia");
 				
 				if(logicaJuego.esfinRonda()) {
 					logicaJuego.cambiarRonda(pilaAct,pilaSig);
 					//enTablero = true;
 				}
 				
-				System.out.println(row + " " + col);
-				System.out.println(table.getValueAt(row, col));
+				//System.out.println(row + " " + col);
+				//System.out.println(table.getValueAt(row, col));
 				//System.out.println(seleccionado);
 			}
 		});

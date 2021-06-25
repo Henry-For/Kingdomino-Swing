@@ -13,6 +13,8 @@ import javax.swing.border.EmptyBorder;
 
 public class Principal extends JFrame implements ActionListener {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Sala sala;
 	private Juego juego;
 	private ArrayList<Jugador> jugadores = new ArrayList<Jugador>();
@@ -63,8 +65,8 @@ public class Principal extends JFrame implements ActionListener {
 		if(sala.getTxtJugador_4().isVisible())
 			jugadores.add(new Jugador(sala.getTxtJugador_4().getText()));
 		
-		Archivo archivo = new Archivo("src/fichas.txt");
-		Mazo mazo = archivo.generarMazo();
+		//Archivo archivo = new Archivo("src/fichas.txt");
+		Mazo mazo = null;//archivo.generarMazo();
 
 		this.juego = new Juego(jugadores, mazo);
 		

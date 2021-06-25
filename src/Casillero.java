@@ -25,7 +25,7 @@ public class Casillero {
 		this.tipoTerreno = tipoTerreno;
 		this.cantCoronas = cantCoronas;
 		this.posicion = posicion;
-		this.ruta = "Casilleros/" + nroFicha + ".jpg";
+		this.ruta = "Casilleros/" + String.format("%02d",Casillero.nroFicha) + ".jpg";
 		nroFicha++;
 		cargarImagen();
 	}

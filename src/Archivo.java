@@ -2,15 +2,15 @@ import java.io.File;
 import java.util.Scanner;
 
 public class Archivo {
-	private String nombre;
+//	private String nombre;
+//	
+//	public Archivo(String nombre) {
+//		this.nombre = nombre;
+//	}
 	
-	public Archivo(String nombre) {
-		this.nombre = nombre;
-	}
-	
-	public Mazo generarMazo() {
+	public static Mazo generarMazo(String nombre) {
 		
-		File archivo = new File(this.nombre);
+		File archivo = new File(nombre);
 		try {
 			if(!archivo.exists()) {
 				System.err.println("Error al abrir el archivo");
