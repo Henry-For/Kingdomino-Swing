@@ -1,6 +1,5 @@
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.Map.Entry;
@@ -56,12 +55,30 @@ public class PilaDeRobo {
 
 	public void setTable(JTable pilaRobo) {
 		this.tabla = pilaRobo;
-		if(this.tabla != null)
-			((PilaModel)this.tabla.getModel()).limpiar();
+		//if(this.tabla != null)
+		//	((PilaModel)this.tabla.getModel()).limpiar();
 	}
 	
 	public Iterator<Jugador> getJugadoresOrdenados() {
-		return this.fichasRonda.values().iterator();
+		List<Jugador> jugadores = new LinkedList<Jugador>();
+		
+		for (Jugador jugador : this.fichasRonda.values()) {
+			if(jugador != null) 
+				jugadores.add(jugador);
+		}
+		
+		return jugadores.iterator();
 	}
 	
+	public void redibujar() {
+		PilaModel p = ((PilaModel)this.tabla.getModel());
+		
+		p.limpiarLista();
+		p.fireTableDataChanged();
+		
+		
+		for (Ficha ficha : this.fichasRonda.keySet()) {
+			p.insertarFicha(ficha);
+		}
+	}
 }

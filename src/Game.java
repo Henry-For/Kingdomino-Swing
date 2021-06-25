@@ -99,15 +99,18 @@ public class Game {
 		}
 		
 		this.pilaDeRoboActual = this.pilaDeRoboSiguiente;
+		//this.pilaDeRoboActual.redibujar();
 		this.pilaDeRoboActual.setTable(actual);
-		//this.pilaDeRoboActual.almacenarFichas(new ArrayList<Ficha>(this.pilaDeRoboActual.getFichasRonda().keySet()));
+		this.pilaDeRoboActual.redibujar();
+		//this.pilaDeRoboActual.almacenarFichas(new ArrayList<Ficha>(this.pilaDeRoboSiguiente.getFichasRonda().keySet()));
 		
-		this.jugadoresActuales = this.jugadores.iterator();//this.pilaDeRoboActual.getJugadoresOrdenados();
+		this.jugadoresActuales = this.pilaDeRoboActual.getJugadoresOrdenados();
 		
 		this.pilaDeRoboSiguiente = new PilaDeRobo();
 		this.pilaDeRoboSiguiente.setTable(siguiente);
 		this.pilaDeRoboSiguiente.almacenarFichas(this.mazo.devolverFichas());
-	
+		this.pilaDeRoboSiguiente.redibujar();
+		
 		this.jugadoresActuales.next().setTurno(true);
 		this.turno = 0;
 		

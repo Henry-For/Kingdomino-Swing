@@ -36,9 +36,7 @@ public class Juego extends JPanel {
 	//private boolean enTablero = false;
 	//private boolean enPila = false;
 	private List<Jugador> jugadores;
-	private ListIterator<Jugador> jugadoresRondaActual;
 	private Jugador jugadorActual;
-	private Mazo mazo;
 	private Game logicaJuego;
 
 	public Juego(ArrayList<Jugador> jugadores, Mazo mazo) {
@@ -46,7 +44,6 @@ public class Juego extends JPanel {
 		cantJugadores = jugadores.size();
 		
 		Archivo archivo = new Archivo("src/fichas.txt");
-		this.mazo = archivo.generarMazo();
 		
 		this.logicaJuego = new Game(jugadores,mazo);
 		
@@ -54,7 +51,6 @@ public class Juego extends JPanel {
 
 		setLayout(null);
 		setBounds(100, 100, 1920, 1080);
-		this.mazo = mazo;
 	}
 
 	public void crearJuego() {

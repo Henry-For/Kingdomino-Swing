@@ -4,7 +4,7 @@ import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
 
-public class PilaModel extends DefaultTableModel{
+public class PilaModel extends DefaultTableModel {
 
 	private static final long serialVersionUID = 1L;
 	private List<Ficha> fichas;
@@ -49,5 +49,9 @@ public class PilaModel extends DefaultTableModel{
 			super.setValueAt(f.getCasilleros()[0],i,0);
 			super.setValueAt(f.getCasilleros()[1],i++,1);
 		}
+	}
+	
+	public void limpiarLista() {
+		this.fichas.clear();
 	}
 }
