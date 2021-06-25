@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+import javax.swing.JTable;
+
 public class Jugador implements Comparable<Jugador>{
 	
 	private int id;
@@ -22,15 +24,15 @@ public class Jugador implements Comparable<Jugador>{
 		tec = new Scanner(System.in);
 	}
 	
-	public Ficha seleccionarFicha(PilaDeRobo pr) {
-		pr.mostrarFichas();
+	public Ficha seleccionarFicha(PilaDeRobo pr,int numFicha) {
+		//pr.mostrarFichas();
 		
-		System.out.print(this.nickName + " seleccione ficha: ");
-		int opcion = tec.nextInt();
+		System.out.println(this.nickName + "seleccionó ficha: "+ numFicha);
+		//int opcion = tec.nextInt();
 		
 		List<Ficha> fichas = new ArrayList<Ficha>(pr.getFichasRonda().keySet());
 		
-		return fichas.get(opcion-1);
+		return fichas.get(numFicha);
 	}
 
 	public boolean elegirPosicionFicha(Ficha f) {
@@ -101,5 +103,40 @@ public class Jugador implements Comparable<Jugador>{
 	
 	public Tablero getTablero() {
 		return tablero;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result + ((nickName == null) ? 0 : nickName.hashCode());
+		result = prime * result + puntaje;
+		result = prime * result + (turno ? 1231 : 1237);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
+		Jugador other = (Jugador) obj;
+		if (id != other.id)
+			return false;
+		
+		return true;
+	}
+	
+	public void agregarTable(JTable table) {
+		this.tablero.setTable(table);
+	}
+	
+	public boolean verificar(JTable table) {
+		return this.tablero.getTable() == table;
 	}
 }

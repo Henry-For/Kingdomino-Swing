@@ -63,7 +63,7 @@ public class Principal extends JFrame implements ActionListener {
 		if(sala.getTxtJugador_4().isVisible())
 			jugadores.add(new Jugador(sala.getTxtJugador_4().getText()));
 		
-		Archivo archivo = new Archivo("fichas.txt");
+		Archivo archivo = new Archivo("src/fichas.txt");
 		Mazo mazo = archivo.generarMazo();
 
 		this.juego = new Juego(jugadores, mazo);

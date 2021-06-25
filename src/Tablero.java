@@ -1,9 +1,12 @@
+import javax.swing.JTable;
+
 public class Tablero {
 
 	private Casillero[][] tablero = new Casillero[5][5];
 	private int[][] matrizDePuntos = new int[5][5];
 	private int auxCoronas = 0; // aux;
-
+	private JTable table;
+	
 	public Tablero() {
 		//tablero[2][2] = new Casillero(Casillero.TERRENO_REY, 0, new Posicion(2, 2));
 		//tablero[2][2] = new Casillero("Fichas/castillo_rojo.jpg");
@@ -158,4 +161,11 @@ public class Tablero {
 				+ contarPuntosR(i + 1, j, t));
 	}
 
+	public void setTable(JTable table) {
+		this.table = table;
+	}
+
+	public JTable getTable() {
+		return table;
+	}
 }

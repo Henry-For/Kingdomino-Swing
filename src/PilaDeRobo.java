@@ -1,18 +1,26 @@
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import javax.swing.JTable;
+
 public class PilaDeRobo {
 	
 	private TreeMap<Ficha, Jugador> fichasRonda;
+	private JTable tabla;
 	
 	public PilaDeRobo() {
 		fichasRonda = new TreeMap<Ficha, Jugador>();
 	}
 		
 	public void almacenarFichas(List<Ficha> f) {
+		
 		for (Ficha ficha : f) {
 			fichasRonda.put(ficha, null);
+			((PilaModel)this.tabla.getModel()).insertarFicha(ficha);
 		}
 	}
 	
@@ -45,4 +53,15 @@ public class PilaDeRobo {
 				System.out.println("- " + set.getValue().getNickName());
 		}
 	}
+
+	public void setTable(JTable pilaRobo) {
+		this.tabla = pilaRobo;
+		if(this.tabla != null)
+			((PilaModel)this.tabla.getModel()).limpiar();
+	}
+	
+	public Iterator<Jugador> getJugadoresOrdenados() {
+		return this.fichasRonda.values().iterator();
+	}
+	
 }
