@@ -124,13 +124,14 @@ public class Juego extends JPanel {
 				
 				jugadorActual = logicaJuego.devolverTurno();
 				
-				if(!jugadorActual.equals(jugador)) {
-					System.out.println("Este tablero no le pertenece al jugador " + jugadorActual.getNickName());
-					return;
-				}
 				
 				if(!logicaJuego.getEnTablero()) {
 					System.out.println("No seleccionaste ficha todavia");
+					return;
+				}
+
+				if(!jugadorActual.equals(jugador)) {
+					System.out.println("Este tablero no le pertenece al jugador " + jugadorActual.getNickName());
 					return;
 				}
 				
@@ -339,7 +340,7 @@ public class Juego extends JPanel {
 		table.getColumnModel().getColumn(0).setPreferredWidth(90);
 		table.getColumnModel().getColumn(1).setPreferredWidth(90);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.setBounds(x, y, 180, 360);/* ATENCION !!! AL CAMBIAR LA INTERFAZ ESTO SE CAMBIA */
+		table.setBounds(x, y, 180, 90*this.cantJugadores);/* ATENCION !!! AL CAMBIAR LA INTERFAZ ESTO SE CAMBIA */
 		table.enable(false);
 
 		if (!esActual) {

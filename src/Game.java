@@ -9,7 +9,7 @@ import javax.swing.JTable;
 public class Game {
 	
 	private ArrayList<Jugador> jugadores;
-	private final static int CANT_RONDAS = 12;
+	private final static int CANT_RONDAS = 2;
 	private PilaDeRobo pilaDeRoboActual;
 	private PilaDeRobo pilaDeRoboSiguiente;
 	private Mazo mazo;
@@ -84,7 +84,7 @@ public class Game {
 		System.out.println("El jugador " + j.getNickName() + " seleccionó la ficha " + pilaDeRoboSiguiente.getFichasRonda().ceilingKey(f));
 		this.turno++;
 		j.setTurno(false);
-		
+		j.getPuntaje();
 		if(this.jugadoresActuales.hasNext())
 			this.jugadoresActuales.next().setTurno(true);
 		
@@ -102,8 +102,12 @@ public class Game {
 			System.out.println("\n--------Fin ronda " + this.ronda +"----------\n");
 		this.ronda++;
 		System.out.println("\n------Comienzo ronda " + this.ronda +"-------\n");
-		if(this.ronda == Game.CANT_RONDAS) {
+		if(this.ronda == Game.CANT_RONDAS+1) {
+			this.desactivarPila();
+			this.desactivarTablero();
 			System.out.println("FIN JUEGO");
+			this.obtenerGanadores();
+			Jugador.mostrarJugadores(jugadores);
 			return;
 		}
 		
@@ -120,7 +124,11 @@ public class Game {
 		this.pilaDeRoboSiguiente.almacenarFichas(this.mazo.devolverFichas());
 		this.pilaDeRoboSiguiente.redibujar();
 		
-		this.jugadoresActuales.next().setTurno(true);
+		Jugador aux = this.jugadoresActuales.next();
+		aux.setTurno(true);
+		
+		System.out.println("\nEl que comienza la ronda es el jugador " + aux.getNickName());
+		
 		this.turno = 0;
 		this.enTablero = true;
 		this.enPila = false;

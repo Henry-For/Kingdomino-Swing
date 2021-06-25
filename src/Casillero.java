@@ -16,7 +16,6 @@ public class Casillero {
 	private String ruta;
 	private BufferedImage imagen;
 	
-	
 	public Casillero(){
 		
 	}
@@ -57,7 +56,7 @@ public class Casillero {
 	
 	@Override
 	public String toString() {
-		return "TTer: " +tipoTerreno+" Ccor: " +cantCoronas +" Pos: " + posicion;
+		return "ruta: " + this.ruta + " t:" + this.tipoTerreno;
 	}
 	
 	public Posicion getPosicion() {

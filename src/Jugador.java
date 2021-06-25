@@ -72,7 +72,7 @@ public class Jugador implements Comparable<Jugador>{
 	}
 	
 	public static void ordenarJugadoresPuntaje(ArrayList<Jugador> jugadores) {
-		Collections.sort(jugadores);
+		Collections.sort(jugadores,Collections.reverseOrder());
 	}
 
 	public String getNickName() {

@@ -11,7 +11,7 @@ public class PilaModel extends DefaultTableModel {
 	
 	public PilaModel(int cantJugadores) {
 		//super(cantJugadores,2);
-		super(4,2);
+		super(cantJugadores,2);
 		this.fichas = new ArrayList<Ficha>(cantJugadores);
 		//this.casilleros = new Casillero[5][5];
 	}
