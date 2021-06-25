@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
+import java.util.Map.Entry;
 import java.awt.Font;
 
 public class Juego extends JPanel {
@@ -300,14 +302,18 @@ public class Juego extends JPanel {
 	}
 	
 	public void actualizarMarcaFichaPila() {
-		List<Jugador> jugadoresAux = logicaJuego.getJugadoresOrdenados();
-		for (int i = 0; i < jugadoresAux.size(); i++) {
-			JButton boton = botones[i]; 
-			boton.setVisible(true);
-			boton.setIcon(escalarImagen(jugadoresAux.get(i).getTablero().getCastillo().getImagen(), 50, 50));
-			boton.setBorder(new MatteBorder(2, 2, 2, 2, jugadoresAux.get(i).getColor()));			
+		Set<Entry<Ficha, Jugador>> jugadoresAux = logicaJuego.getEntryJugadoresPorFicha();
+		int pos = 0;
+		for (Entry<Ficha, Jugador> entry : jugadoresAux) {
+			Jugador jugador = entry.getValue();
+			if(jugador != null) {
+				JButton boton = botones[pos]; 
+				boton.setVisible(true);
+				boton.setIcon(escalarImagen(jugador.getTablero().getCastillo().getImagen(), 50, 50));
+				boton.setBorder(new MatteBorder(2, 2, 2, 2, jugador.getColor()));			
+			}
+			pos++;
 		}
-
 	}
 
 	public void setearPila(JTable tabla, List<Ficha> fichasPila) {

@@ -3,6 +3,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.JTable;
 
@@ -167,8 +168,8 @@ public class Game {
 		Jugador.ordenarJugadoresPuntaje(jugadores);
 	}
 
-	public List<Jugador> getJugadoresOrdenados() {
-		return pilaDeRoboActual.getJugadoresOrdenados();
+	public Set<Entry<Ficha, Jugador>> getEntryJugadoresPorFicha() {
+		return pilaDeRoboActual.getEntryJugadores();
 	}
 
 	public boolean esfinRonda() {
