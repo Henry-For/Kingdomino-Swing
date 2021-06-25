@@ -25,16 +25,20 @@ public class Juego extends JPanel {
 	private JTable table3;
 	private JTable table4;
 	private JTable pilaAct;
-	private JTable pilaSig = null;
+	private JTable pilaSig;
 	private Integer cantJugadores;
 	private List<Jugador> jugadores;
 	private Jugador jugadorActual;
 	private Game logicaJuego;
 	private JButton botones[] = new JButton[4];
 
-	public Juego(ArrayList<Jugador> jugadores, Mazo mazo) {
+	public Juego(ArrayList<Jugador> jugadores) {
 		this.jugadores = jugadores;
-		cantJugadores = jugadores.size();
+		this.cantJugadores = jugadores.size();
+		
+		this.crearBotones();
+		this.crearPilas();
+		crearTablas();
 		
 		this.logicaJuego = new Game(jugadores);
 
@@ -42,62 +46,47 @@ public class Juego extends JPanel {
 		setBounds(100, 100, 1920, 1080);
 	}
 
-	public void crearJuego() {
-
-		crearTablas();
-
+	private void crearBotones() {
+		
+		int offset = 0;
+		for (int i = 0; i < botones.length; i++) {
+			
+			this.botones[i] = new JButton();   
+			this.botones[i].setVisible(false);
+			this.botones[i].setBounds(630, 150+offset, 50, 50);
+			add(this.botones[i]);
+			
+			offset += 90;
+		}
+	}
+	
+	private void crearPilas() {
+		
 		JLabel lblPilaActual = new JLabel("PILA DE ROBO ACTUAL");
 		lblPilaActual.setFont(new Font("Sylfaen", Font.PLAIN, 19));
 		lblPilaActual.setBounds(702, 87, 241, 32);
 		add(lblPilaActual);
-
+		
 		JLabel lblPilaSig = new JLabel("PILA DE ROBO SIGUIENTE");
 		lblPilaSig.setFont(new Font("Sylfaen", Font.PLAIN, 19));
 		lblPilaSig.setBounds(996, 87, 241, 32);
 		add(lblPilaSig);
 		
 		this.pilaAct = new PilaTable(1020,130,this.cantJugadores);
+		this.pilaAct.setVisible(false);
+
 		this.pilaSig = new PilaTable(720,130,this.cantJugadores);
 		this.agregarListener();
 		
 		add(this.pilaAct);
 		add(this.pilaSig);
-		
-		this.pilaAct.setVisible(false);
-
-		JButton boton1 = new JButton();   
-		boton1.setVisible(false);
-		boton1.setBounds(630, 150, 50, 50);
-		add(boton1);
-		
-		JButton boton2 = new JButton();   
-		boton2.setVisible(false);
-		boton2.setBounds(630, 240, 50, 50);
-		add(boton2);
-		
-		JButton boton3 = new JButton();   
-		boton3.setVisible(false);
-		boton3.setBounds(630, 330, 50, 50);
-		add(boton3);
-		
-		JButton boton4 = new JButton();   
-		boton4.setVisible(false);
-		boton4.setBounds(630, 420, 50, 50);
-		add(boton4);
-		
-		botones[0] = boton1;
-		botones[1] = boton2;
-		botones[2] = boton3;
-		botones[3] = boton4;
-	    
-		//this.pilaSig = crearPila(1020, 130);
+	}
+	
+	public void iniciar() {
 		
 		this.jugadores = this.logicaJuego.inicializar(pilaSig);
-		//this.enPila = true;
-		//this.jugadoresRonda = this.logicaJuego.devolverJugadores();
 	}
 
-	//@SuppressWarnings("deprecation")
 	private JTable crearTabla(int x, int y, Color color, Jugador jugador) {
 		DefaultTableModel model = new DefaultTableModel(5, 5);
 		JTable table = new JTable(model) {
