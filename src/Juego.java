@@ -287,13 +287,6 @@ public class Juego extends JPanel {
 		}
 	}
 
-//	public void setearPila(JTable tabla, List<Ficha> fichasPila) {
-//		for (int i = 0; i < fichasPila.size(); i++) {
-//			agregarCasillero(tabla, i, 0, fichasPila.get(i).getCasilleros()[0], 0);
-//			agregarCasillero(tabla, i, 1, fichasPila.get(i).getCasilleros()[1], 0);
-//		}
-//	}
-
 	public void agregarCasillero(JTable tabla, int x, int y, Casillero casillero, double rotacion) {
 		if (casillero == null) {
 			tabla.getModel().setValueAt(null, x, y);
@@ -311,77 +304,9 @@ public class Juego extends JPanel {
 	public ImageIcon escalarImagen(Image imagen, int width, int heigth) {
 		return new ImageIcon(imagen.getScaledInstance(width, heigth, java.awt.Image.SCALE_SMOOTH));
 	}
-
-//	public void agregarFicha(Casillero c1, Casillero c2,int pos) {
-//		//this.seleccionado = new Casillero[] { c1, c2 };
-//		//Ficha f = new Ficha(new Casillero[] { c1, c2 });
-//		//f.setCasilleros(seleccionado);
-//		//this.logicaJuego.agregarFicha(this.jugadoresRonda.get(0),new Casillero[] { c1, c2 },pos);
-//	}
 	
 	public void agregarFicha(Ficha f) {
 		this.logicaJuego.agregarFicha(jugadorActual,f);
-	}
-
-//	@SuppressWarnings("deprecation")
-//	private JTable crearPila(int x, int y, boolean esActual) {
-//		
-//		PilaModel model = new PilaModel(this.cantJugadores);
-//		JTable table = new JTable(model);
-//		table.setRowSelectionAllowed(false);
-//		table.setRowHeight(90);
-//		table.getColumnModel().getColumn(0).setCellRenderer(new Renderer());
-//		table.getColumnModel().getColumn(1).setCellRenderer(new Renderer());
-//		table.getColumnModel().getColumn(0).setPreferredWidth(90);
-//		table.getColumnModel().getColumn(1).setPreferredWidth(90);
-//		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-//		table.setBounds(x, y, 180, 90*this.cantJugadores);/* ATENCION !!! AL CAMBIAR LA INTERFAZ ESTO SE CAMBIA */
-//		table.enable(false);
-//
-//		if (!esActual) {
-//			table.addMouseListener(new MouseAdapter() {
-//				@Override
-//				public void mouseClicked(MouseEvent event) {
-//
-//					int row = table.rowAtPoint(event.getPoint());
-//					int col = table.columnAtPoint(event.getPoint());
-//
-//				if(!logicaJuego.getEnPila()) {
-//					System.out.println("No se puede seleccionar fichas ya!");
-//					return;
-//				}
-//				
-//				
-//				jugadorActual = logicaJuego.devolverTurno();
-//				
-//				if (!logicaJuego.getEnTablero() && table.getValueAt(row, col) != null) {
-//					agregarFicha(((PilaModel)table.getModel()).getFichaAt(row,col));
-//				}
-//				else
-//					System.out.println("Pila no accesible todavia");
-//				
-//				if(logicaJuego.esfinRonda()) {
-//					
-//					if(logicaJuego.esRondaPreliminar()) {
-//						dibujarPilaSig();
-//					}
-//					
-//					logicaJuego.cambiarRonda(pilaAct,pilaSig);
-//					actualizarMarcaFichaPila();
-//				}
-//				
-//			}
-//		});
-//
-//		}
-//		return table;
-//	}
-	
-	public void dibujarPilaSig() {
-		
-		this.pilaSig.setBounds(1020, 130, 180, 90*this.cantJugadores);
-		this.pilaAct.setBounds(720, 130, 180, 90*this.cantJugadores);
-		this.pilaAct.setVisible(true);
 	}
 	
 	private void agregarListener() {
@@ -417,5 +342,12 @@ public class Juego extends JPanel {
 				}
 			}
 		});
+	}
+
+	public void dibujarPilaSig() {
+		
+		this.pilaSig.setBounds(1020, 130, 180, 90*this.cantJugadores);
+		this.pilaAct.setBounds(720, 130, 180, 90*this.cantJugadores);
+		this.pilaAct.setVisible(true);
 	}
 }
