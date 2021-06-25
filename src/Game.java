@@ -216,4 +216,8 @@ public class Game {
 	public void desactivarTablero() {
 		this.enTablero = false;
 	}
+	
+	public boolean esRondaPreliminar() {
+		return this.ronda == 0;
+	}
 }

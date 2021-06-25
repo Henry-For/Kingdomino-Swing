@@ -9,7 +9,7 @@ import javax.swing.JTable;
 public class PilaDeRobo {
 	
 	private TreeMap<Ficha, Jugador> fichasRonda;
-	private JTable tabla;
+	private PilaTable tabla;
 	
 	public PilaDeRobo() {
 		fichasRonda = new TreeMap<Ficha, Jugador>();
@@ -54,7 +54,7 @@ public class PilaDeRobo {
 	}
 
 	public void setTable(JTable pilaRobo) {
-		this.tabla = pilaRobo;
+		this.tabla = (PilaTable)pilaRobo;
 		//if(this.tabla != null)
 		//	((PilaModel)this.tabla.getModel()).limpiar();
 	}

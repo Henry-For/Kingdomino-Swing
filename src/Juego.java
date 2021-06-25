@@ -56,12 +56,15 @@ public class Juego extends JPanel {
 		lblPilaSig.setBounds(996, 87, 241, 32);
 		add(lblPilaSig);
 		
-		this.pilaAct = crearPila(720, 130, true);
-		this.pilaSig = crearPila(1020, 130, false);
+		this.pilaAct = new PilaTable(1020,130,this.cantJugadores);
+		this.pilaSig = new PilaTable(720,130,this.cantJugadores);
+		this.agregarListener();
 		
 		add(this.pilaAct);
 		add(this.pilaSig);
 		
+		this.pilaAct.setVisible(false);
+
 		JButton boton1 = new JButton();   
 		boton1.setVisible(false);
 		boton1.setBounds(630, 150, 50, 50);
@@ -94,10 +97,16 @@ public class Juego extends JPanel {
 		//this.jugadoresRonda = this.logicaJuego.devolverJugadores();
 	}
 
-	@SuppressWarnings("deprecation")
+	//@SuppressWarnings("deprecation")
 	private JTable crearTabla(int x, int y, Color color, Jugador jugador) {
 		DefaultTableModel model = new DefaultTableModel(5, 5);
-		JTable table = new JTable(model);
+		JTable table = new JTable(model) {
+			private static final long serialVersionUID = 1L;
+
+			public boolean editCellAt(int row, int column, java.util.EventObject e) {
+	            return false;
+	         }
+		};
 		table.setRowSelectionAllowed(false);
 		table.setRowHeight(90);
 		table.getColumnModel().getColumn(0).setCellRenderer(new Renderer());
@@ -113,7 +122,6 @@ public class Juego extends JPanel {
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.setBounds(x, y, 450, 450);
 		table.setBorder(new MatteBorder(2, 2, 2, 2, color));
-		table.enable(false);
 
 		table.addMouseListener(new MouseAdapter() {
 			@Override
@@ -123,7 +131,6 @@ public class Juego extends JPanel {
 				int col = table.columnAtPoint(event.getPoint());
 				
 				jugadorActual = logicaJuego.devolverTurno();
-				
 				
 				if(!logicaJuego.getEnTablero()) {
 					System.out.println("No seleccionaste ficha todavia");
@@ -141,7 +148,6 @@ public class Juego extends JPanel {
 				if (table.getValueAt(row, col) == null) {
 					if (c1.getPosicion() != null) {
 						
-						//seleccionado[1].setPosicion(new Posicion(row,col));
 						c2.setPosicion(new Posicion(row,col));
 						
 						int x = c1.getPosicion().getX();
@@ -177,26 +183,26 @@ public class Juego extends JPanel {
 						row = c2.getPosicion().getX();
 						col = c2.getPosicion().getY();
 
-						//Ficha f = new Ficha(1, seleccionado);
 						Posicion pos1 = new Posicion(x, y);
 						Posicion pos2 = new Posicion(row, col);
-						if ((((x + 1 == row || x - 1 == row) && (y == col)) || ((y + 1 == col || y - 1 == col) && (x == row))) && jugador.getTablero().posicionarFicha(f, pos1, pos2)) {
+						if (sonConsecutivas(pos1,pos2) && jugador.getTablero().posicionarFicha(f, pos1, pos2)) {
 
-							//System.out.println(angulo);
 							c1.rotate(angulo);
 							c2.rotate(angulo);
 							table.setValueAt(c1, x, y);
 							table.setValueAt(c2,row, col);
-							//jugadorActual.setTurno(false);
-							//jugadores.get(1).setTurno(true);
+
 							logicaJuego.desactivarTablero();
 							logicaJuego.activarPila();
+							
 							System.out.println("El jugador " + jugadorActual.getNickName() + " inserto su ficha");
 							System.out.println("Ahora te toca seleccionar una ficha de la pila de robo!");
 						} else {
 							System.out.println("Error, no son consecutivas");
+							
 							table.setValueAt(null, x, y);
 							table.setValueAt(null, row, col);
+							
 							c1.setPosicion(null);
 							c2.setPosicion(null);
 						}
@@ -209,19 +215,20 @@ public class Juego extends JPanel {
 					System.out.println("Casillero ocupado");
 				}
 
-//				if(!jugadoresrondaactual.hasnext()) {
-//					//system.out.println("iniciando ubicacion de fichas");
-//					while(jugadoresrondaactual.previousindex() > 0) {
-//						jugadoresrondaactual.previous();
-//					}
-//					//logicajuego.cambiarronda();
-//				}
-				//System.out.println(row + " " + col);
-				//System.out.println(table.getValueAt(row, col));
 			}
 		});
 
 		return table;
+	}
+	
+	public boolean sonConsecutivas(Posicion p1, Posicion p2) {
+		
+		int x = p1.getX();
+		int y = p1.getY();
+		int row = p2.getX();
+		int col = p2.getY();
+		
+		return (((x + 1 == row || x - 1 == row) && (y == col)) || ((y + 1 == col || y - 1 == col) && (x == row)));
 	}
 
 	private void crearTablas() {
@@ -291,12 +298,12 @@ public class Juego extends JPanel {
 		}
 	}
 
-	public void setearPila(JTable tabla, List<Ficha> fichasPila) {
-		for (int i = 0; i < fichasPila.size(); i++) {
-			agregarCasillero(tabla, i, 0, fichasPila.get(i).getCasilleros()[0], 0);
-			agregarCasillero(tabla, i, 1, fichasPila.get(i).getCasilleros()[1], 0);
-		}
-	}
+//	public void setearPila(JTable tabla, List<Ficha> fichasPila) {
+//		for (int i = 0; i < fichasPila.size(); i++) {
+//			agregarCasillero(tabla, i, 0, fichasPila.get(i).getCasilleros()[0], 0);
+//			agregarCasillero(tabla, i, 1, fichasPila.get(i).getCasilleros()[1], 0);
+//		}
+//	}
 
 	public void agregarCasillero(JTable tabla, int x, int y, Casillero casillero, double rotacion) {
 		if (casillero == null) {
@@ -316,40 +323,85 @@ public class Juego extends JPanel {
 		return new ImageIcon(imagen.getScaledInstance(width, heigth, java.awt.Image.SCALE_SMOOTH));
 	}
 
-	public void agregarFicha(Casillero c1, Casillero c2,int pos) {
-		//this.seleccionado = new Casillero[] { c1, c2 };
-		//Ficha f = new Ficha(new Casillero[] { c1, c2 });
-		//f.setCasilleros(seleccionado);
-		//this.logicaJuego.agregarFicha(this.jugadoresRonda.get(0),new Casillero[] { c1, c2 },pos);
-	}
+//	public void agregarFicha(Casillero c1, Casillero c2,int pos) {
+//		//this.seleccionado = new Casillero[] { c1, c2 };
+//		//Ficha f = new Ficha(new Casillero[] { c1, c2 });
+//		//f.setCasilleros(seleccionado);
+//		//this.logicaJuego.agregarFicha(this.jugadoresRonda.get(0),new Casillero[] { c1, c2 },pos);
+//	}
 	
 	public void agregarFicha(Ficha f) {
 		this.logicaJuego.agregarFicha(jugadorActual,f);
 	}
 
-	@SuppressWarnings("deprecation")
-	private JTable crearPila(int x, int y, boolean esActual) {
-		//DefaultTableModel model = new DefaultTableModel(4, 2);
-		PilaModel model = new PilaModel(this.cantJugadores);
-		JTable table = new JTable(model);
-		table.setRowSelectionAllowed(false);
-		table.setRowHeight(90);
-		//table.setDefaultRenderer(getClass(), new Renderer());
-		table.getColumnModel().getColumn(0).setCellRenderer(new Renderer());
-		table.getColumnModel().getColumn(1).setCellRenderer(new Renderer());
-		table.getColumnModel().getColumn(0).setPreferredWidth(90);
-		table.getColumnModel().getColumn(1).setPreferredWidth(90);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.setBounds(x, y, 180, 90*this.cantJugadores);/* ATENCION !!! AL CAMBIAR LA INTERFAZ ESTO SE CAMBIA */
-		table.enable(false);
+//	@SuppressWarnings("deprecation")
+//	private JTable crearPila(int x, int y, boolean esActual) {
+//		
+//		PilaModel model = new PilaModel(this.cantJugadores);
+//		JTable table = new JTable(model);
+//		table.setRowSelectionAllowed(false);
+//		table.setRowHeight(90);
+//		table.getColumnModel().getColumn(0).setCellRenderer(new Renderer());
+//		table.getColumnModel().getColumn(1).setCellRenderer(new Renderer());
+//		table.getColumnModel().getColumn(0).setPreferredWidth(90);
+//		table.getColumnModel().getColumn(1).setPreferredWidth(90);
+//		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+//		table.setBounds(x, y, 180, 90*this.cantJugadores);/* ATENCION !!! AL CAMBIAR LA INTERFAZ ESTO SE CAMBIA */
+//		table.enable(false);
+//
+//		if (!esActual) {
+//			table.addMouseListener(new MouseAdapter() {
+//				@Override
+//				public void mouseClicked(MouseEvent event) {
+//
+//					int row = table.rowAtPoint(event.getPoint());
+//					int col = table.columnAtPoint(event.getPoint());
+//
+//				if(!logicaJuego.getEnPila()) {
+//					System.out.println("No se puede seleccionar fichas ya!");
+//					return;
+//				}
+//				
+//				
+//				jugadorActual = logicaJuego.devolverTurno();
+//				
+//				if (!logicaJuego.getEnTablero() && table.getValueAt(row, col) != null) {
+//					agregarFicha(((PilaModel)table.getModel()).getFichaAt(row,col));
+//				}
+//				else
+//					System.out.println("Pila no accesible todavia");
+//				
+//				if(logicaJuego.esfinRonda()) {
+//					
+//					if(logicaJuego.esRondaPreliminar()) {
+//						dibujarPilaSig();
+//					}
+//					
+//					logicaJuego.cambiarRonda(pilaAct,pilaSig);
+//					actualizarMarcaFichaPila();
+//				}
+//				
+//			}
+//		});
+//
+//		}
+//		return table;
+//	}
+	
+	public void dibujarPilaSig() {
+		
+		this.pilaSig.setBounds(1020, 130, 180, 90*this.cantJugadores);
+		this.pilaAct.setBounds(720, 130, 180, 90*this.cantJugadores);
+		this.pilaAct.setVisible(true);
+	}
+	
+	private void agregarListener() {
+		this.pilaSig.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent event) {
 
-		if (!esActual) {
-			table.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent event) {
-
-					int row = table.rowAtPoint(event.getPoint());
-					int col = table.columnAtPoint(event.getPoint());
+				int row = pilaSig.rowAtPoint(event.getPoint());
+				int col = pilaSig.columnAtPoint(event.getPoint());
 
 				if(!logicaJuego.getEnPila()) {
 					System.out.println("No se puede seleccionar fichas ya!");
@@ -357,34 +409,24 @@ public class Juego extends JPanel {
 				}
 				
 				
-				/*if(!actual.verificar(table)) {
-					System.out.println("Error: es el turno de " + actual.getNickName());
-					jugadoresRondaActual.previous();
-					return;
-				}*/
 				jugadorActual = logicaJuego.devolverTurno();
 				
-				if (!logicaJuego.getEnTablero() && table.getValueAt(row, col) != null) {
-					agregarFicha(((PilaModel)table.getModel()).getFichaAt(row,col));
-					//logicaJuego.activarTablero();
+				if (!logicaJuego.getEnTablero() && pilaSig.getValueAt(row, col) != null) {
+					agregarFicha(((PilaModel)pilaSig.getModel()).getFichaAt(row,col));
 				}
-					//agregarFicha((Casillero) table.getValueAt(row, 0), (Casillero) table.getValueAt(row, 1),row);
 				else
 					System.out.println("Pila no accesible todavia");
 				
 				if(logicaJuego.esfinRonda()) {
+					
+					if(logicaJuego.esRondaPreliminar()) {
+						dibujarPilaSig();
+					}
+					
 					logicaJuego.cambiarRonda(pilaAct,pilaSig);
 					actualizarMarcaFichaPila();
-					//enTablero = true;
 				}
-				
-				//System.out.println(row + " " + col);
-				//System.out.println(table.getValueAt(row, col));
-				//System.out.println(seleccionado);
 			}
 		});
-
-		}
-		return table;
 	}
 }
