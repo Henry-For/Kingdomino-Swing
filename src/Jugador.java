@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,13 +16,15 @@ public class Jugador implements Comparable<Jugador>{
 	private Tablero tablero;
 	private static Scanner tec;
 	private boolean turno = false;
+	private Color color;
 	
-	public Jugador(String nickName) {
+	public Jugador(String nickName, Color color) {
 		this.nickName = nickName;
 		cantidadJugadores++;
 		this.id = cantidadJugadores;
 		this.tablero = new Tablero();
 		tec = new Scanner(System.in);
+		this.color = color;
 	}
 	
 	public Ficha seleccionarFicha(PilaDeRobo pr,int numFicha) {
@@ -138,5 +141,9 @@ public class Jugador implements Comparable<Jugador>{
 	
 	public boolean verificar(JTable table) {
 		return this.tablero.getTable() == table;
+	}
+
+	public Color getColor() {
+		return color;
 	}
 }

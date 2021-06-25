@@ -1,5 +1,6 @@
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import javax.swing.JTable;
@@ -24,14 +25,10 @@ public class Juego extends JPanel {
 	private JTable pilaAct;
 	private JTable pilaSig = null;
 	private Integer cantJugadores;
-	//private Casillero[] seleccionado = null;
-	//private boolean seleccion = false;
-	//private List<Jugador> jugadoresRonda;
-	//private boolean enTablero = false;
-	//private boolean enPila = false;
 	private List<Jugador> jugadores;
 	private Jugador jugadorActual;
 	private Game logicaJuego;
+	private JButton botones[] = new JButton[4];
 
 	public Juego(ArrayList<Jugador> jugadores, Mazo mazo) {
 		this.jugadores = jugadores;
@@ -61,6 +58,32 @@ public class Juego extends JPanel {
 		
 		add(this.pilaAct);
 		add(this.pilaSig);
+		
+		JButton boton1 = new JButton();   
+		boton1.setVisible(false);
+		boton1.setBounds(630, 150, 50, 50);
+		add(boton1);
+		
+		JButton boton2 = new JButton();   
+		boton2.setVisible(false);
+		boton2.setBounds(630, 240, 50, 50);
+		add(boton2);
+		
+		JButton boton3 = new JButton();   
+		boton3.setVisible(false);
+		boton3.setBounds(630, 330, 50, 50);
+		add(boton3);
+		
+		JButton boton4 = new JButton();   
+		boton4.setVisible(false);
+		boton4.setBounds(630, 420, 50, 50);
+		add(boton4);
+		
+		botones[0] = boton1;
+		botones[1] = boton2;
+		botones[2] = boton3;
+		botones[3] = boton4;
+	    
 		//this.pilaSig = crearPila(1020, 130);
 		
 		this.jugadores = this.logicaJuego.inicializar(pilaSig);
@@ -98,13 +121,12 @@ public class Juego extends JPanel {
 				
 				jugadorActual = logicaJuego.devolverTurno();
 				
-
-				if(jugador.equals(jugadorActual)) {
-					System.out.println("No es tu tablero");
+				if(!jugadorActual.equals(jugador)) {
+					System.out.println("Este tablero no le pertenece al jugador " + jugadorActual.getNickName());
 					return;
 				}
 				
-				if(logicaJuego.getEnTablero()) {
+				if(!logicaJuego.getEnTablero()) {
 					System.out.println("No seleccionaste ficha todavia");
 					return;
 				}
@@ -163,8 +185,8 @@ public class Juego extends JPanel {
 							table.setValueAt(c2,row, col);
 							//jugadorActual.setTurno(false);
 							//jugadores.get(1).setTurno(true);
+							logicaJuego.desactivarTablero();
 							logicaJuego.activarPila();
-							
 							System.out.println("El jugador " + jugadorActual.getNickName() + " inserto su ficha");
 							System.out.println("Ahora te toca seleccionar una ficha de la pila de robo!");
 						} else {
@@ -199,8 +221,8 @@ public class Juego extends JPanel {
 	}
 
 	private void crearTablas() {
-		//System.out.println(this.cantJugadores);
-		table1 = crearTabla(10, 11, Color.RED, jugadores.get(0));
+		System.out.println(this.cantJugadores);
+		table1 = crearTabla(10, 11, jugadores.get(0).getColor(), jugadores.get(0));
 		jugadores.get(0).setTurno(true);
 		jugadores.get(0).getTablero().agregarCastillo("Fichas/castillo_rojo.jpg");
 		jugadores.get(0).agregarTable(table1);
@@ -213,7 +235,7 @@ public class Juego extends JPanel {
 		nombreJugador1.setBounds(465, 460, 241, 32);
 		add(nombreJugador1);
 
-		table2 = crearTabla(1460, 11, Color.BLUE, jugadores.get(1));
+		table2 = crearTabla(1460, 11, jugadores.get(1).getColor(), jugadores.get(1));
 		jugadores.get(1).getTablero().agregarCastillo("Fichas/castillo_azul.jpg");
 		jugadores.get(1).agregarTable(table2);
 		add(table2);
@@ -225,7 +247,7 @@ public class Juego extends JPanel {
 		add(nombreJugador2);
 
 		if (this.cantJugadores >= 3) {
-			table3 = crearTabla(1460, 560, Color.GREEN, jugadores.get(2));
+			table3 = crearTabla(1460, 560, jugadores.get(2).getColor(), jugadores.get(2));
 			add(table3);
 			jugadores.get(2).getTablero().agregarCastillo("Fichas/castillo_verde.jpg");
 			agregarCasillero(table3, 2, 2, jugadores.get(2).getTablero().getCastillo(), 0);
@@ -237,7 +259,7 @@ public class Juego extends JPanel {
 		}
 
 		if (this.cantJugadores == 4) {
-			table4 = crearTabla(10, 560, Color.YELLOW, jugadores.get(3));
+			table4 = crearTabla(10, 560, jugadores.get(3).getColor(), jugadores.get(3));
 			add(table4);
 			jugadores.get(3).getTablero().agregarCastillo("Fichas/castillo_amarillo.jpg");
 			agregarCasillero(table4, 2, 2, jugadores.get(3).getTablero().getCastillo(), 0);
@@ -259,6 +281,17 @@ public class Juego extends JPanel {
 		//setearPila(pilaSig, mazo.devolverFichas());
 		//setearPila(pilaAct, mazo.devolverFichas());
 	}
+	
+	public void actualizarMarcaFichaPila() {
+		List<Jugador> jugadoresAux = logicaJuego.getJugadoresOrdenados();
+		for (int i = 0; i < jugadoresAux.size(); i++) {
+			JButton boton = botones[i]; 
+			boton.setVisible(true);
+			boton.setIcon(escalarImagen(jugadoresAux.get(i).getTablero().getCastillo().getImagen(), 50, 50));
+			boton.setBorder(new MatteBorder(2, 2, 2, 2, jugadoresAux.get(i).getColor()));			
+		}
+
+	}
 
 	public void setearPila(JTable tabla, List<Ficha> fichasPila) {
 		for (int i = 0; i < fichasPila.size(); i++) {
@@ -278,11 +311,11 @@ public class Juego extends JPanel {
 	}
 
 	public ImageIcon escalarImagen(ImageIcon imagen, int width, int heigth) {
-		return new ImageIcon(imagen.getImage().getScaledInstance(90, 90, java.awt.Image.SCALE_SMOOTH));
+		return new ImageIcon(imagen.getImage().getScaledInstance(width, heigth, java.awt.Image.SCALE_SMOOTH));
 	}
 
 	public ImageIcon escalarImagen(Image imagen, int width, int heigth) {
-		return new ImageIcon(imagen.getScaledInstance(90, 90, java.awt.Image.SCALE_SMOOTH));
+		return new ImageIcon(imagen.getScaledInstance(width, heigth, java.awt.Image.SCALE_SMOOTH));
 	}
 
 	public void agregarFicha(Casillero c1, Casillero c2,int pos) {
@@ -332,14 +365,17 @@ public class Juego extends JPanel {
 				}*/
 				jugadorActual = logicaJuego.devolverTurno();
 				
-				if (!logicaJuego.getEnTablero() && table.getValueAt(row, col) != null)
+				if (!logicaJuego.getEnTablero() && table.getValueAt(row, col) != null) {
 					agregarFicha(((PilaModel)table.getModel()).getFichaAt(row,col));
+					//logicaJuego.activarTablero();
+				}
 					//agregarFicha((Casillero) table.getValueAt(row, 0), (Casillero) table.getValueAt(row, 1),row);
 				else
 					System.out.println("Pila no accesible todavia");
 				
 				if(logicaJuego.esfinRonda()) {
 					logicaJuego.cambiarRonda(pilaAct,pilaSig);
+					actualizarMarcaFichaPila();
 					//enTablero = true;
 				}
 				

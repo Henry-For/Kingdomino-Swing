@@ -1,4 +1,3 @@
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
@@ -19,8 +18,8 @@ public class PilaDeRobo {
 		
 		for (Ficha ficha : f) {
 			fichasRonda.put(ficha, null);
-			((PilaModel)this.tabla.getModel()).insertarFicha(ficha);
 		}
+		this.redibujar();
 	}
 	
 	public boolean asignarFicha(Ficha f, Jugador j) {
@@ -59,7 +58,7 @@ public class PilaDeRobo {
 		//	((PilaModel)this.tabla.getModel()).limpiar();
 	}
 	
-	public Iterator<Jugador> getJugadoresOrdenados() {
+	public List<Jugador> getJugadoresOrdenados() {
 		List<Jugador> jugadores = new LinkedList<Jugador>();
 		
 		for (Jugador jugador : this.fichasRonda.values()) {
@@ -67,7 +66,7 @@ public class PilaDeRobo {
 				jugadores.add(jugador);
 		}
 		
-		return jugadores.iterator();
+		return jugadores;
 	}
 	
 	public void redibujar() {

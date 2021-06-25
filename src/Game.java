@@ -76,13 +76,21 @@ public class Game {
 	}
 	
 	public void agregarFicha(Jugador j,Ficha f) {
-		pilaDeRoboSiguiente.asignarFicha(f, j);
+		
+		if(!pilaDeRoboSiguiente.asignarFicha(f, j))
+			return;
+		
 		System.out.println("El jugador " + j.getNickName() + " seleccionó la ficha " + pilaDeRoboSiguiente.getFichasRonda().ceilingKey(f));
 		this.turno++;
 		j.setTurno(false);
 		
 		if(this.jugadoresActuales.hasNext())
 			this.jugadoresActuales.next().setTurno(true);
+		
+		if(this.ronda != 0) {
+			this.activarTablero();
+			this.desactivarPila();
+		}
 		//else
 		//	this.cambiarRonda();
 	}
@@ -104,7 +112,7 @@ public class Game {
 		this.pilaDeRoboActual.redibujar();
 		//this.pilaDeRoboActual.almacenarFichas(new ArrayList<Ficha>(this.pilaDeRoboSiguiente.getFichasRonda().keySet()));
 		
-		this.jugadoresActuales = this.pilaDeRoboActual.getJugadoresOrdenados();
+		this.jugadoresActuales = this.pilaDeRoboActual.getJugadoresOrdenados().iterator();
 		
 		this.pilaDeRoboSiguiente = new PilaDeRobo();
 		this.pilaDeRoboSiguiente.setTable(siguiente);
@@ -113,7 +121,8 @@ public class Game {
 		
 		this.jugadoresActuales.next().setTurno(true);
 		this.turno = 0;
-		
+		this.enTablero = true;
+		this.enPila = false;
 	}
 	
 	public Ficha obtenerFicha(Jugador j) {
@@ -167,6 +176,10 @@ public class Game {
 		Jugador.ordenarJugadoresPuntaje(jugadores);
 	}
 
+	public List<Jugador> getJugadoresOrdenados() {
+		return pilaDeRoboActual.getJugadoresOrdenados();
+	}
+
 	public boolean esfinRonda() {
 		return this.turno == this.jugadores.size();
 	}
@@ -183,4 +196,15 @@ public class Game {
 		this.enPila = true;
 	}
 	
+	public void desactivarPila() {
+		this.enPila = false;
+	}
+
+	public void activarTablero() {
+		this.enTablero = true;
+	}
+	
+	public void desactivarTablero() {
+		this.enTablero = false;
+	}
 }

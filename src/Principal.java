@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -58,12 +59,12 @@ public class Principal extends JFrame implements ActionListener {
 	}
 	
 	public void crearJuego() {
-		jugadores.add(new Jugador(sala.getTxtJugador_1().getText()));
-		jugadores.add(new Jugador(sala.getTxtJugador_2().getText()));
+		jugadores.add(new Jugador(sala.getTxtJugador_1().getText(), Color.RED));
+		jugadores.add(new Jugador(sala.getTxtJugador_2().getText(), Color.BLUE));
 		if(sala.getTxtJugador_3().isVisible())
-			jugadores.add(new Jugador(sala.getTxtJugador_3().getText()));
+			jugadores.add(new Jugador(sala.getTxtJugador_3().getText(), Color.GREEN));
 		if(sala.getTxtJugador_4().isVisible())
-			jugadores.add(new Jugador(sala.getTxtJugador_4().getText()));
+			jugadores.add(new Jugador(sala.getTxtJugador_4().getText(), Color.YELLOW));
 		
 		//Archivo archivo = new Archivo("src/fichas.txt");
 		Mazo mazo = null;//archivo.generarMazo();
