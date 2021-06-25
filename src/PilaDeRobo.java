@@ -2,6 +2,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.JTable;
 
@@ -67,6 +68,10 @@ public class PilaDeRobo {
 		}
 		
 		return jugadores;
+	}
+	
+	public Set<Entry<Ficha,Jugador>> getEntryJugadores() {
+		return fichasRonda.entrySet();
 	}
 	
 	public void redibujar() {

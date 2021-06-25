@@ -13,6 +13,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 import java.awt.Font;
 
 public class Juego extends JPanel {
@@ -54,7 +56,8 @@ public class Juego extends JPanel {
 		lblPilaSig.setBounds(996, 87, 241, 32);
 		add(lblPilaSig);
 		
-		this.pilaAct = crearPila(720, 130);
+		this.pilaAct = crearPila(720, 130, true);
+		this.pilaSig = crearPila(1020, 130, false);
 		
 		add(this.pilaAct);
 		add(this.pilaSig);
@@ -269,28 +272,22 @@ public class Juego extends JPanel {
 			nombreJugador4.setBounds(465, 540, 241, 32);
 			add(nombreJugador4);
 		}
-
-		//pilaAct = crearPila(720, 130);
-		pilaSig = crearPila(1020, 130);
-		//add(pilaSig);
-		//setearPila(pilaSig, mazo.devolverFichas());
-
-
-		//setearPila(pilaAct, mazo.devolverFichas());
-		//setearPila(pilaSig, mazo.devolverFichas());
-		//setearPila(pilaSig, mazo.devolverFichas());
-		//setearPila(pilaAct, mazo.devolverFichas());
 	}
 	
 	public void actualizarMarcaFichaPila() {
-		List<Jugador> jugadoresAux = logicaJuego.getJugadoresOrdenados();
-		for (int i = 0; i < jugadoresAux.size(); i++) {
-			JButton boton = botones[i]; 
-			boton.setVisible(true);
-			boton.setIcon(escalarImagen(jugadoresAux.get(i).getTablero().getCastillo().getImagen(), 50, 50));
-			boton.setBorder(new MatteBorder(2, 2, 2, 2, jugadoresAux.get(i).getColor()));			
+		Set<Entry<Ficha, Jugador>> jugadoresAux = logicaJuego.getEntryJugadoresPorFicha();
+		int pos = 0;
+		for (Entry<Ficha, Jugador> entry : jugadoresAux) {
+			Jugador jugador = entry.getValue();
+			JButton boton = botones[pos];
+			if(jugador != null) {
+				boton.setVisible(true);
+				boton.setIcon(escalarImagen(jugador.getTablero().getCastillo().getImagen(), 50, 50));
+				boton.setBorder(new MatteBorder(2, 2, 2, 2, jugador.getColor()));			
+			} else
+				boton.setVisible(false);
+			pos++;
 		}
-
 	}
 
 	public void setearPila(JTable tabla, List<Ficha> fichasPila) {
@@ -330,7 +327,7 @@ public class Juego extends JPanel {
 	}
 
 	@SuppressWarnings("deprecation")
-	private JTable crearPila(int x, int y) {
+	private JTable crearPila(int x, int y, boolean esActual) {
 		//DefaultTableModel model = new DefaultTableModel(4, 2);
 		PilaModel model = new PilaModel(this.cantJugadores);
 		JTable table = new JTable(model);
@@ -345,12 +342,13 @@ public class Juego extends JPanel {
 		table.setBounds(x, y, 180, 360);/* ATENCION !!! AL CAMBIAR LA INTERFAZ ESTO SE CAMBIA */
 		table.enable(false);
 
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent event) {
+		if (!esActual) {
+			table.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent event) {
 
-				int row = table.rowAtPoint(event.getPoint());
-				int col = table.columnAtPoint(event.getPoint());
+					int row = table.rowAtPoint(event.getPoint());
+					int col = table.columnAtPoint(event.getPoint());
 
 				if(!logicaJuego.getEnPila()) {
 					System.out.println("No se puede seleccionar fichas ya!");
@@ -385,6 +383,7 @@ public class Juego extends JPanel {
 			}
 		});
 
+		}
 		return table;
 	}
 }
