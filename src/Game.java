@@ -104,7 +104,7 @@ public class Game {
 		this.pilaDeRoboActual.redibujar();
 		//this.pilaDeRoboActual.almacenarFichas(new ArrayList<Ficha>(this.pilaDeRoboSiguiente.getFichasRonda().keySet()));
 		
-		this.jugadoresActuales = this.pilaDeRoboActual.getJugadoresOrdenados();
+		this.jugadoresActuales = this.pilaDeRoboActual.getJugadoresOrdenados().iterator();
 		
 		this.pilaDeRoboSiguiente = new PilaDeRobo();
 		this.pilaDeRoboSiguiente.setTable(siguiente);
@@ -165,6 +165,10 @@ public class Game {
 */	
 	public void obtenerGanadores() {
 		Jugador.ordenarJugadoresPuntaje(jugadores);
+	}
+
+	public List<Jugador> getJugadoresOrdenados() {
+		return pilaDeRoboActual.getJugadoresOrdenados();
 	}
 
 	public boolean esfinRonda() {

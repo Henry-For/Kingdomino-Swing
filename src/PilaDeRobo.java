@@ -59,7 +59,7 @@ public class PilaDeRobo {
 		//	((PilaModel)this.tabla.getModel()).limpiar();
 	}
 	
-	public Iterator<Jugador> getJugadoresOrdenados() {
+	public List<Jugador> getJugadoresOrdenados() {
 		List<Jugador> jugadores = new LinkedList<Jugador>();
 		
 		for (Jugador jugador : this.fichasRonda.values()) {
@@ -67,7 +67,7 @@ public class PilaDeRobo {
 				jugadores.add(jugador);
 		}
 		
-		return jugadores.iterator();
+		return jugadores;
 	}
 	
 	public void redibujar() {
