@@ -69,9 +69,9 @@ public class Principal extends JFrame implements ActionListener {
 		//Archivo archivo = new Archivo("src/fichas.txt");
 		Mazo mazo = null;//archivo.generarMazo();
 
-		this.juego = new Juego(jugadores, mazo);
+		this.juego = new Juego(jugadores);
 		
-		juego.crearJuego();
+		juego.iniciar();
 		juego.setBorder(new EmptyBorder(5, 5, 5, 5));
 		juego.setLayout(new BorderLayout(0, 0));
 		add(juego,BorderLayout.CENTER);
