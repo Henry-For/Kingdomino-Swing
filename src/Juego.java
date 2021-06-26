@@ -20,30 +20,35 @@ import java.awt.Font;
 public class Juego extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JTable table1;
-	private JTable table2;
-	private JTable table3;
-	private JTable table4;
+	private JTable[] tableros;
+	
 	private JTable pilaAct;
 	private JTable pilaSig;
+	
 	private Integer cantJugadores;
 	private List<Jugador> jugadores;
 	private Jugador jugadorActual;
-	private Game logicaJuego;
+	
 	private JButton botones[] = new JButton[4];
+	private Game logicaJuego;
 
 	public Juego(ArrayList<Jugador> jugadores) {
 		this.jugadores = jugadores;
 		this.cantJugadores = jugadores.size();
 		
+		this.crearTablas();
 		this.crearBotones();
 		this.crearPilas();
-		crearTablas();
 		
 		this.logicaJuego = new Game(jugadores);
 
 		setLayout(null);
 		setBounds(100, 100, 1920, 1080);
+	}
+	
+	public void iniciar() {
+		
+		this.jugadores = this.logicaJuego.inicializar(pilaSig);
 	}
 
 	private void crearBotones() {
@@ -82,9 +87,45 @@ public class Juego extends JPanel {
 		add(this.pilaSig);
 	}
 	
-	public void iniciar() {
+	private void crearTablas() {
+		jugadores.get(0).setTurno(true);
 		
-		this.jugadores = this.logicaJuego.inicializar(pilaSig);
+		this.tableros = new JTable[this.cantJugadores];
+		
+		int [][] posicionesTablero = {
+								{10,11},
+								{1460,11},
+								{1460,560},
+								{10,560}
+		};
+		
+		int [][] posicionesNombres = {
+								{465,460},
+								{1380,460},
+								{1380,540},
+								{465,540}
+		};
+		
+		int i = 0;
+		for (Jugador jugador : jugadores) {
+			
+			this.tableros[i] = crearTabla(posicionesTablero[i][0],posicionesTablero[i][1], jugador.getColor(), jugador);
+			
+			jugador.getTablero().agregarCastillo("Fichas/castillo_rojo.jpg");
+			jugador.agregarTable(this.tableros[i]);
+			
+			agregarCasillero(this.tableros[i], 2, 2, jugador.getTablero().getCastillo(), 0);
+
+			
+			JLabel nombreJugador = new JLabel(jugador.getNickName());
+			nombreJugador.setFont(new Font("Sylfaen", Font.PLAIN, 19));
+			nombreJugador.setBounds(posicionesNombres[i][0],posicionesNombres[i][1], 241, 32);
+			
+			add(this.tableros[i]);
+			add(nombreJugador);
+
+			i++;
+		}
 	}
 
 	private JTable crearTabla(int x, int y, Color color, Jugador jugador) {
@@ -224,57 +265,6 @@ public class Juego extends JPanel {
 		int col = p2.getY();
 		
 		return (((x + 1 == row || x - 1 == row) && (y == col)) || ((y + 1 == col || y - 1 == col) && (x == row)));
-	}
-
-	private void crearTablas() {
-		System.out.println(this.cantJugadores);
-		table1 = crearTabla(10, 11, jugadores.get(0).getColor(), jugadores.get(0));
-		jugadores.get(0).setTurno(true);
-		jugadores.get(0).getTablero().agregarCastillo("Fichas/castillo_rojo.jpg");
-		jugadores.get(0).agregarTable(table1);
-		
-		add(table1);
-		agregarCasillero(table1, 2, 2, jugadores.get(0).getTablero().getCastillo(), 0);
-
-		JLabel nombreJugador1 = new JLabel(jugadores.get(0).getNickName());
-		nombreJugador1.setFont(new Font("Sylfaen", Font.PLAIN, 19));
-		nombreJugador1.setBounds(465, 460, 241, 32);
-		add(nombreJugador1);
-
-		table2 = crearTabla(1460, 11, jugadores.get(1).getColor(), jugadores.get(1));
-		jugadores.get(1).getTablero().agregarCastillo("Fichas/castillo_azul.jpg");
-		jugadores.get(1).agregarTable(table2);
-		add(table2);
-		agregarCasillero(table2, 2, 2, jugadores.get(1).getTablero().getCastillo(), 0);
-
-		JLabel nombreJugador2 = new JLabel(jugadores.get(1).getNickName());
-		nombreJugador2.setFont(new Font("Sylfaen", Font.PLAIN, 19));
-		nombreJugador2.setBounds(1380, 460, 241, 32);
-		add(nombreJugador2);
-
-		if (this.cantJugadores >= 3) {
-			table3 = crearTabla(1460, 560, jugadores.get(2).getColor(), jugadores.get(2));
-			add(table3);
-			jugadores.get(2).getTablero().agregarCastillo("Fichas/castillo_verde.jpg");
-			agregarCasillero(table3, 2, 2, jugadores.get(2).getTablero().getCastillo(), 0);
-
-			JLabel nombreJugador3 = new JLabel(jugadores.get(2).getNickName());
-			nombreJugador3.setFont(new Font("Sylfaen", Font.PLAIN, 19));
-			nombreJugador3.setBounds(1380, 540, 241, 32);
-			add(nombreJugador3);
-		}
-
-		if (this.cantJugadores == 4) {
-			table4 = crearTabla(10, 560, jugadores.get(3).getColor(), jugadores.get(3));
-			add(table4);
-			jugadores.get(3).getTablero().agregarCastillo("Fichas/castillo_amarillo.jpg");
-			agregarCasillero(table4, 2, 2, jugadores.get(3).getTablero().getCastillo(), 0);
-
-			JLabel nombreJugador4 = new JLabel(jugadores.get(3).getNickName());
-			nombreJugador4.setFont(new Font("Sylfaen", Font.PLAIN, 19));
-			nombreJugador4.setBounds(465, 540, 241, 32);
-			add(nombreJugador4);
-		}
 	}
 	
 	public void actualizarMarcaFichaPila() {
