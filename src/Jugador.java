@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 import javax.swing.JTable;
 
@@ -14,7 +13,6 @@ public class Jugador implements Comparable<Jugador>{
 	private String nickName;
 	private int puntaje;
 	private Tablero tablero;
-	private static Scanner tec;
 	private boolean turno = false;
 	private Color color;
 	
@@ -23,7 +21,6 @@ public class Jugador implements Comparable<Jugador>{
 		cantidadJugadores++;
 		this.id = cantidadJugadores;
 		this.tablero = new Tablero();
-		tec = new Scanner(System.in);
 		this.color = color;
 	}
 	
@@ -36,25 +33,6 @@ public class Jugador implements Comparable<Jugador>{
 		List<Ficha> fichas = new ArrayList<Ficha>(pr.getFichasRonda().keySet());
 		
 		return fichas.get(numFicha);
-	}
-
-	public boolean elegirPosicionFicha(Ficha f) {
-		Posicion 	posCasillero1 = new Posicion(),
-					posCasillero2 = new Posicion();
-		do{
-			System.out.println(this.nickName + " inserte la posicion de la ficha:");
-			int x = tec.nextInt();
-			int y = tec.nextInt();
-			int x1 = tec.nextInt();
-			int y1 = tec.nextInt();			
-			posCasillero1.setX(x);
-			posCasillero1.setY(y);
-			posCasillero2.setX(x1);
-			posCasillero2.setY(y1);
-			
-		}while(tablero.posicionarFicha(f, posCasillero1, posCasillero2) == false);
-		
-		return true; // Si devuelve falso la interfaz deberia marcar en rojo.
 	}
 	
 	private void obtenerPuntaje() {

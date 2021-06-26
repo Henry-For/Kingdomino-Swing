@@ -1,16 +1,15 @@
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.border.MatteBorder;
 import javax.swing.plaf.ColorUIResource;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -21,8 +20,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.awt.Font;
-import javax.swing.JScrollBar;
-import static javax.swing.ScrollPaneConstants.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Juego extends JPanel {
 
@@ -38,11 +37,10 @@ public class Juego extends JPanel {
 	
 	private JButton botones[] = new JButton[4];
 	private Game logicaJuego;
+	
+	private AudioInputStream ais;
+	Clip clip;
 	private JTable puntajes;
-	private JTable table_1;
-	//private Cliente cliente;
-	//private Servidor server;
-	//private JTextArea textArea;
 	
 	public Juego(ArrayList<Jugador> jugadores) {
 		this.jugadores = jugadores;
@@ -61,22 +59,41 @@ public class Juego extends JPanel {
 		setLayout(null);
 		setBounds(100, 100, 1920, 1080);
 		
-//		DefaultTableModel model = new DefaultTableModel();
-//	    table_1 = new JTable(model);
-//	    table_1.setFont(new Font("Times New Roman", Font.PLAIN, 13));
-//	    model.addColumn("ID");
-//	    model.addColumn("NAME");
-//	    model.addColumn("MODEL");
-//	    model.addColumn("P_Price");
-//	    model.addColumn("S_Price");
-//	    model.addColumn("Quantity");
-//	    model.addRow(new Object[] {null,null});
-//	    table_1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-//		add(table_1);
+		JButton btnNewButton = new JButton("Musica");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				musica();
+			}
+		});
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnNewButton.setBounds(906, 11, 89, 23);
+		add(btnNewButton);
+		
+		try {
+			ais = AudioSystem.getAudioInputStream(getClass().getResource("musicaFondo.wav"));
+			clip = AudioSystem.getClip();
+			clip.open(ais);
+			clip.setFramePosition(0);
+			clip.start();
+			clip.loop(100);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-		//this.textArea = new JTextArea();
-		//textArea.setBounds(720, 526, 517, 219);
-		//add(textArea);
+
+	
+	
+	public void musica() {
+		if(clip.isActive())
+			clip.stop();
+		else
+			clip.start();
 	}
 	
 //	public void escribirMensajeEnTextArea(String mensaje) {
@@ -123,6 +140,7 @@ public class Juego extends JPanel {
 		
 		add(this.pilaAct);
 		add(this.pilaSig);
+		
 	}
 	
 	private void crearTablas() {
@@ -286,6 +304,11 @@ public class Juego extends JPanel {
 							}
 						}
 						
+						System.out.println(angulo);
+						
+						f.getCasilleros()[0] = c1;
+						f.getCasilleros()[1] = c2;
+						
 						x = c1.getPosicion().getX();
 						y = c1.getPosicion().getY();
 						row = c2.getPosicion().getX();
@@ -293,7 +316,11 @@ public class Juego extends JPanel {
 
 						Posicion pos1 = new Posicion(x, y);
 						Posicion pos2 = new Posicion(row, col);
-						if (sonConsecutivas(pos1,pos2) && jugador.getTablero().posicionarFicha(f, pos1, pos2)) {
+						
+						System.out.println(pos1);
+						System.out.println(pos2);
+						
+						if (sonConsecutivas(pos1,pos2) && jugador.getTablero().posicionar(f)) {
 
 							c1.rotate(angulo);
 							c2.rotate(angulo);

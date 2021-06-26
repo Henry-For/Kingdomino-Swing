@@ -19,7 +19,7 @@ public class Principal extends JFrame implements ActionListener {
 	private Sala sala;
 	private Juego juego;
 	private ArrayList<Jugador> jugadores = new ArrayList<Jugador>();
-
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -37,7 +37,7 @@ public class Principal extends JFrame implements ActionListener {
 	public Principal() {
 		
 		this.sala = new Sala();
-		
+		//this.server = new Servidor(50000);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1920, 1080);
 		sala.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -70,7 +70,7 @@ public class Principal extends JFrame implements ActionListener {
 		Mazo mazo = null;//archivo.generarMazo();
 
 		this.juego = new Juego(jugadores);
-		
+		//this.server.run();
 		juego.iniciar();
 		juego.setBorder(new EmptyBorder(5, 5, 5, 5));
 		juego.setLayout(new BorderLayout(0, 0));

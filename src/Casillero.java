@@ -45,10 +45,6 @@ public class Casillero {
 			e.printStackTrace();
 		}
 	}
-
-	public boolean sonConsecutivos(Casillero c) {
-		return true;
-	}
 	
 	public boolean sonTerrenosConsecutivos(Casillero c) {
 		return tipoTerreno.equals(c.tipoTerreno) || c.tipoTerreno.equals(TERRENO_REY);
