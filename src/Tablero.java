@@ -16,12 +16,10 @@ public class Tablero {
 		this.tablero = tablero;
 	}
 
-	public boolean posicionarFicha(Ficha f, Posicion posCasillero1, Posicion posCasillero2) {
-		if (tieneTerrenoCorrelativo(f, posCasillero1, posCasillero2)) {
-			f.getCasilleros()[0].setPosicion(posCasillero1);
-			f.getCasilleros()[1].setPosicion(posCasillero2);
-			tablero[posCasillero1.getX()][posCasillero1.getY()] = f.getCasilleros()[0];
-			tablero[posCasillero2.getX()][posCasillero2.getY()] = f.getCasilleros()[1];
+	public boolean posicionarFicha(Ficha f) {
+		if (tieneTerrenoCorrelativo(f)) {
+			tablero[f.getCasilleros()[0].getPosicion().getX()][f.getCasilleros()[0].getPosicion().getY()] = f.getCasilleros()[0];
+			tablero[f.getCasilleros()[1].getPosicion().getX()][f.getCasilleros()[1].getPosicion().getY()] = f.getCasilleros()[1];
 			return true;
 		}
 
@@ -29,14 +27,14 @@ public class Tablero {
 		return false;
 	}
 
-	public boolean tieneTerrenoCorrelativo(Ficha f, Posicion posCasillero1, Posicion posCasillero2) {
+	public boolean tieneTerrenoCorrelativo(Ficha f) {
+		int x1 = f.getCasilleros()[0].getPosicion().getX();
+		int y1 = f.getCasilleros()[0].getPosicion().getY();
+		int x2 = f.getCasilleros()[1].getPosicion().getX();
+		int y2 = f.getCasilleros()[1].getPosicion().getY();
 
-		if(posCasillero1.getX() == posCasillero2.getX()) {
+		if(x1 == x2) {
 
-			int x1 = posCasillero1.getX();
-			int y1 = posCasillero1.getY();
-			int x2 = posCasillero2.getX();
-			int y2 = posCasillero2.getY();
 
 			if (x1 - 1 >= 0 && tablero[x1 - 1][y1] != null && f.getCasilleros()[0].sonTerrenosConsecutivos(tablero[x1 - 1][y1]))
 				return true;
@@ -52,11 +50,6 @@ public class Tablero {
 				return true;
 			return false;
 		} else {
-			
-			int x1 = posCasillero1.getX();
-			int y1 = posCasillero1.getY();
-			int x2 = posCasillero2.getX();
-			int y2 = posCasillero2.getY();
 
 			if (x1 - 1 >= 0 && tablero[x1 - 1][y1] != null && f.getCasilleros()[0].sonTerrenosConsecutivos(tablero[x1 - 1][y1]))
 				return true;

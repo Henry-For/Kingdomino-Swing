@@ -37,25 +37,6 @@ public class Jugador implements Comparable<Jugador>{
 		
 		return fichas.get(numFicha);
 	}
-
-	public boolean elegirPosicionFicha(Ficha f) {
-		Posicion 	posCasillero1 = new Posicion(),
-					posCasillero2 = new Posicion();
-		do{
-			System.out.println(this.nickName + " inserte la posicion de la ficha:");
-			int x = tec.nextInt();
-			int y = tec.nextInt();
-			int x1 = tec.nextInt();
-			int y1 = tec.nextInt();			
-			posCasillero1.setX(x);
-			posCasillero1.setY(y);
-			posCasillero2.setX(x1);
-			posCasillero2.setY(y1);
-			
-		}while(tablero.posicionarFicha(f, posCasillero1, posCasillero2) == false);
-		
-		return true; // Si devuelve falso la interfaz deberia marcar en rojo.
-	}
 	
 	private void obtenerPuntaje() {
 		
