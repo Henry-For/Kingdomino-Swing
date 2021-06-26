@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Juego extends JPanel {
 
@@ -36,6 +38,9 @@ public class Juego extends JPanel {
 	
 	private JButton botones[] = new JButton[4];
 	private Game logicaJuego;
+	
+	private AudioInputStream ais;
+	Clip clip;
 
 	public Juego(ArrayList<Jugador> jugadores) {
 		this.jugadores = jugadores;
@@ -50,15 +55,41 @@ public class Juego extends JPanel {
 		setLayout(null);
 		setBounds(100, 100, 1920, 1080);
 		
+		JButton btnNewButton = new JButton("Musica");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				musica();
+			}
+		});
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnNewButton.setBounds(906, 11, 89, 23);
+		add(btnNewButton);
+		
 		try {
-			AudioInputStream ais = AudioSystem.getAudioInputStream(getClass().getResource("musicaFondo.wav"));
-			Clip clip = AudioSystem.getClip();
+			ais = AudioSystem.getAudioInputStream(getClass().getResource("musicaFondo.wav"));
+			clip = AudioSystem.getClip();
 			clip.open(ais);
 			clip.setFramePosition(0);
 			clip.start();
+			clip.loop(100);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	
+	
+	public void musica() {
+		if(clip.isActive())
+			clip.stop();
+		else
+			clip.start();
 	}
 	
 	public void iniciar() {
