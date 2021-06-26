@@ -68,6 +68,21 @@ public class Tablero {
 		}
 	}
 	
+	public boolean hayEspacioDisponible() {
+		int tamTablero = tablero.length;
+		for (int i = 0; i < tamTablero; i++) {
+			for (int j = 0; j < tamTablero; j++) {
+				if(tablero[i][j] == null) {
+					if(j < tamTablero-1 && tablero[i][j+1] == null)
+						return true;
+					if(i < tamTablero-1 && tablero[i+1][j] == null)
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public void agregarCastillo(String ruta) {
 		tablero[2][2] = new Casillero(ruta);
 	}
