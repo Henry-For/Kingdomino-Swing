@@ -5,13 +5,10 @@ import javax.swing.JTable;
 public class PilaTable extends JTable{
 
 	private static final long serialVersionUID = 1L;
-	//private static PilaModel aux;
-	//private PilaModel model;
-	
+
 	public PilaTable(int x, int y, int cantJugadores) {
 		
 		super(new PilaModel(cantJugadores));
-		//this.model = aux;
 		super.setRowSelectionAllowed(false);
 		super.setRowHeight(90);
 		super.getColumnModel().getColumn(0).setCellRenderer(new Renderer());

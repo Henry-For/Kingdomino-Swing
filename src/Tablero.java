@@ -35,33 +35,54 @@ public class Tablero {
 
 		if(x1 == x2) {
 
+			int primero = 0;
+			int segundo = 1;
+			
+			if(y1 > y2) {
+				primero = 1;
+				segundo = 0;
+				int aux = y2;
+				y2 = y1;
+				y1 = aux;
+			}
 
-			if (x1 - 1 >= 0 && tablero[x1 - 1][y1] != null && f.getCasilleros()[0].sonTerrenosConsecutivos(tablero[x1 - 1][y1]))
+			if (x1 - 1 >= 0 && tablero[x1 - 1][y1] != null && f.getCasilleros()[primero].sonTerrenosConsecutivos(tablero[x1 - 1][y1]))
 				return true;
-			if (x1 + 1 < 5 && tablero[x1 + 1][y1] != null && f.getCasilleros()[0].sonTerrenosConsecutivos(tablero[x1 + 1][y1]))
+			if (x1 + 1 < 5 && tablero[x1 + 1][y1] != null && f.getCasilleros()[primero].sonTerrenosConsecutivos(tablero[x1 + 1][y1]))
 				return true;
-			if (y1 - 1 >= 0 && tablero[x1][y1 - 1] != null && f.getCasilleros()[0].sonTerrenosConsecutivos(tablero[x1][y1 - 1]))
+			if (y1 - 1 >= 0 && tablero[x1][y1 - 1] != null && f.getCasilleros()[primero].sonTerrenosConsecutivos(tablero[x1][y1 - 1]))
 				return true;
-			if (x2 - 1 >= 0 && tablero[x2 - 1][y2] != null && f.getCasilleros()[1].sonTerrenosConsecutivos(tablero[x2 - 1][y2]))
+			if (x2 - 1 >= 0 && tablero[x2 - 1][y2] != null && f.getCasilleros()[segundo].sonTerrenosConsecutivos(tablero[x2 - 1][y2]))
 				return true;
-			if (x2 + 1 < 5 && tablero[x2 + 1][y2] != null && f.getCasilleros()[1].sonTerrenosConsecutivos(tablero[x2 + 1][y2]))
+			if (x2 + 1 < 5 && tablero[x2 + 1][y2] != null && f.getCasilleros()[segundo].sonTerrenosConsecutivos(tablero[x2 + 1][y2]))
 				return true;
-			if (y2 + 1 < 5 && tablero[x2][y2 + 1] != null && f.getCasilleros()[1].sonTerrenosConsecutivos(tablero[x2][y2 + 1]))
+			if (y2 + 1 < 5 && tablero[x2][y2 + 1] != null && f.getCasilleros()[segundo].sonTerrenosConsecutivos(tablero[x2][y2 + 1]))
 				return true;
 			return false;
 		} else {
 
-			if (x1 - 1 >= 0 && tablero[x1 - 1][y1] != null && f.getCasilleros()[0].sonTerrenosConsecutivos(tablero[x1 - 1][y1]))
+			int primero = 0;
+			int segundo = 1;
+			
+			if(x1 > x2) {
+				primero = 1;
+				segundo = 0;
+				int aux = x2;
+				x2 = x1;
+				x1 = aux;
+			}
+			
+			if (x1 - 1 >= 0 && tablero[x1 - 1][y1] != null && f.getCasilleros()[primero].sonTerrenosConsecutivos(tablero[x1 - 1][y1]))
 				return true;
-			if (y1 - 1 >= 0 && tablero[x1][y1 - 1] != null && f.getCasilleros()[0].sonTerrenosConsecutivos(tablero[x1][y1 - 1]))
+			if (y1 - 1 >= 0 && tablero[x1][y1 - 1] != null && f.getCasilleros()[primero].sonTerrenosConsecutivos(tablero[x1][y1 - 1]))
 				return true;
-			if (y1 + 1 < 5 && tablero[x1][y1 + 1] != null && f.getCasilleros()[0].sonTerrenosConsecutivos(tablero[x1][y1 + 1]))
+			if (y1 + 1 < 5 && tablero[x1][y1 + 1] != null && f.getCasilleros()[primero].sonTerrenosConsecutivos(tablero[x1][y1 + 1]))
 				return true;
-			if (x2 + 1 < 5 && tablero[x2 + 1][y2] != null && f.getCasilleros()[1].sonTerrenosConsecutivos(tablero[x2 + 1][y2]))
+			if (x2 + 1 < 5 && tablero[x2 + 1][y2] != null && f.getCasilleros()[segundo].sonTerrenosConsecutivos(tablero[x2 + 1][y2]))
 				return true;
-			if (y2 - 1 >= 0 && tablero[x2][y2 - 1] != null && f.getCasilleros()[1].sonTerrenosConsecutivos(tablero[x2][y2 - 1]))
+			if (y2 - 1 >= 0 && tablero[x2][y2 - 1] != null && f.getCasilleros()[segundo].sonTerrenosConsecutivos(tablero[x2][y2 - 1]))
 				return true;
-			if (y2 + 1 < 5 && tablero[x2][y2 + 1] != null && f.getCasilleros()[1].sonTerrenosConsecutivos(tablero[x2][y2 + 1]))
+			if (y2 + 1 < 5 && tablero[x2][y2 + 1] != null && f.getCasilleros()[segundo].sonTerrenosConsecutivos(tablero[x2][y2 + 1]))
 				return true;
 			return false;
 			

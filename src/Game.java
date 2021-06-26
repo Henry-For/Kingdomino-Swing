@@ -9,23 +9,20 @@ import javax.swing.JTable;
 public class Game {
 	
 	private ArrayList<Jugador> jugadores;
-	private final static int CANT_RONDAS = 3;
+	private final static int CANT_RONDAS = 12;
 	private PilaDeRobo pilaDeRoboActual;
 	private PilaDeRobo pilaDeRoboSiguiente;
 	private Mazo mazo;
-	//Iterator<Entry<Ficha,Jugador>> ronda;
 	private int turno;
 	private int ronda;
 	private Iterator<Jugador> jugadoresActuales;
 	private boolean enTablero;
 	private boolean enPila;
-	//private Cliente cliente;
 	
 	public Game(ArrayList<Jugador> jugadores) {
 		this.jugadores = jugadores;
 		this.mazo = Archivo.generarMazo("src/fichas.txt");
 		this.pilaDeRoboSiguiente = new PilaDeRobo();
-		//this.cliente = new Cliente(50000,"localhost");
 	}
 
 /*	public void ejecutarJuego() {
@@ -52,25 +49,16 @@ public class Game {
 		
 		pilaDeRoboSiguiente.almacenarFichas(mazo.devolverFichas());
 		
-//		Jugador.mezclarJugadores(jugadores);
+		Jugador.mezclarJugadores(jugadores);
 	
 		this.jugadoresActuales = this.jugadores.iterator();
 		this.jugadoresActuales.next().setTurno(true);
-//		int i = 0;
-//		for (Jugador jugador : jugadores) {
-//			Ficha fichaElegida;
-//			do
-//			{
-//				fichaElegida= jugador.seleccionarFicha(pilaDeRoboActual,i);			
-//			}while(pilaDeRoboActual.asignarFicha(fichaElegida, jugador) == false);
-//			i++;
-//		}
-//		this.pilaDeRoboActual = this.pilaDeRoboSiguiente;
+		
 		this.turno = 0;
 		this.ronda = 0;
 		this.enTablero = false;
 		this.enPila = true;
-		//this.cambiarRonda(actual, siguiente);
+		
 		return this.jugadores;
 	}
 	
@@ -78,32 +66,36 @@ public class Game {
 		return this.jugadores;
 	}
 	
-	public void agregarFicha(Jugador j,Ficha f) {
+	public boolean agregarFicha(Jugador j,Ficha f,Consola consola) {
 		
 		if(!pilaDeRoboSiguiente.asignarFicha(f, j))
-			return;
+			return false;
 		
-		System.out.println("El jugador " + j.getNickName() + " seleccionó la ficha " + pilaDeRoboSiguiente.getFichasRonda().ceilingKey(f));
+		consola.escribir("El jugador " + j.getNickName() + " seleccionó una ficha");
 		
-		this.cambioDeTurno(j);
+		this.cambioDeTurno(j,consola);
 		
 		if(this.ronda != 0) {
 			this.activarTablero();
 			this.desactivarPila();
 		}
-		//else
-		//	this.cambiarRonda();
+		
+		return true;
 	}
 	
-	public void cambioDeTurno(Jugador j) {
+	public void cambioDeTurno(Jugador j,Consola consola) {
 		
 		this.turno++;
 		
 		j.getPuntaje();
 		j.setTurno(false);
 
-		if(this.jugadoresActuales.hasNext())
-			this.jugadoresActuales.next().setTurno(true);
+		if(this.jugadoresActuales.hasNext()) {
+			j = this.jugadoresActuales.next();
+			j.setTurno(true);
+			consola.escribir("Turno del jugador " + j.getNickName());
+		}
+		
 	}
 	
 	public void cambiarRonda(JTable actual,JTable siguiente) {
@@ -113,20 +105,18 @@ public class Game {
 		this.ronda++;
 		System.out.println("\n------Comienzo ronda " + this.ronda +"-------\n");
 		
-		if(this.ronda == Game.CANT_RONDAS+1) {
+		if(this.esFinJuego()) {
 			this.desactivarPila();
 			this.desactivarTablero();
-			System.out.println("FIN JUEGO");
 			this.obtenerGanadores();
 			Jugador.mostrarJugadores(jugadores);
 			return;
 		}
 		
 		this.pilaDeRoboActual = this.pilaDeRoboSiguiente;
-		//this.pilaDeRoboActual.redibujar();
+
 		this.pilaDeRoboActual.setTable(actual);
 		this.pilaDeRoboActual.redibujar();
-		//this.pilaDeRoboActual.almacenarFichas(new ArrayList<Ficha>(this.pilaDeRoboSiguiente.getFichasRonda().keySet()));
 		
 		this.jugadoresActuales = this.pilaDeRoboActual.getJugadoresOrdenados().iterator();
 		
@@ -135,10 +125,10 @@ public class Game {
 		this.pilaDeRoboSiguiente.almacenarFichas(this.mazo.devolverFichas());
 		this.pilaDeRoboSiguiente.redibujar();
 		
-		Jugador aux = this.jugadoresActuales.next();
-		aux.setTurno(true);
+		Jugador primero = this.jugadoresActuales.next();
+		primero.setTurno(true);
 		
-		System.out.println("\nEl que comienza la ronda es el jugador " + aux.getNickName());
+		//System.out.println("\nEl que comienza la ronda es el jugador " + aux.getNickName());
 		
 		this.turno = 0;
 		this.enTablero = true;
@@ -162,36 +152,6 @@ public class Game {
 		return null;
 	}
 	
-/*	public void ejecutarRonda() {
-
-		this.pilaDeRoboSiguiente = new PilaDeRobo();
-		pilaDeRoboSiguiente.almacenarFichas(mazo.devolverFichas());
-		
-		this.pilaDeRoboActual.mostrarOrdenJugadores();
-		
-		for (Entry<Ficha, Jugador> set : pilaDeRoboActual.getFichasRonda().entrySet()) {
-			Jugador jugador = set.getValue();
-			if(jugador != null) {
-				System.out.println("\n===================================================");
-				if(jugador.elegirPosicionFicha(set.getKey()))
-				{
-					System.out.println(jugador.getNickName() + " ficha " + set.getKey() + "\ninsertada" );
-				}
-				else
-				{
-					System.out.println(jugador.getNickName() + " ficha no insertada");
-				}
-				Ficha fichaElegida;
-				do
-				{
-					fichaElegida = jugador.seleccionarFicha(pilaDeRoboSiguiente);					
-				}while(pilaDeRoboSiguiente.asignarFicha(fichaElegida, jugador) == false);
-				
-				//System.out.println("Tu ficha asignada es: " + fichaElegida);
-			}
-		}
-	}
-*/	
 	public void obtenerGanadores() {
 		Jugador.ordenarJugadoresPuntaje(jugadores);
 	}
@@ -234,5 +194,17 @@ public class Game {
 	
 	public boolean esUltimaRonda() {
 		return this.ronda == Game.CANT_RONDAS;
+	}
+
+	public boolean intentarInsertar(Jugador jugadorActual) {
+		return jugadorActual.getTablero().hayEspacioDisponible();
+	}
+
+	public int getRonda() {
+		return this.ronda;
+	}
+
+	public boolean esFinJuego() {
+		return this.ronda == Game.CANT_RONDAS+1;
 	}
 }

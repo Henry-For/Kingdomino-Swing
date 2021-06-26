@@ -26,7 +26,6 @@ public class PilaDeRobo {
 	public boolean asignarFicha(Ficha f, Jugador j) {
 		if(this.fichasRonda.get(f) != null)
 		{
-			System.out.println("Ficha ocupada");
 			return false;
 		}
 		

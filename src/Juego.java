@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextArea;
 
 public class Juego extends JPanel {
 
@@ -41,6 +42,7 @@ public class Juego extends JPanel {
 	private AudioInputStream ais;
 	Clip clip;
 	private JTable puntajes;
+	private Consola consola;
 	
 	public Juego(ArrayList<Jugador> jugadores) {
 		this.jugadores = jugadores;
@@ -49,10 +51,6 @@ public class Juego extends JPanel {
 		this.crearTablas();
 		this.crearBotones();
 		this.crearPilas();
-		//this.server = new Servidor(50000);
-		//this.server.start();
-		
-		//this.cliente = new Cliente(50000,"localhost");
 
 		this.logicaJuego = new Game(jugadores);
 		
@@ -73,6 +71,10 @@ public class Juego extends JPanel {
 		btnNewButton.setBounds(906, 11, 89, 23);
 		add(btnNewButton);
 		
+		this.consola = new Consola(760,754,new JTextArea());
+		
+		add(this.consola);
+		
 		try {
 			ais = AudioSystem.getAudioInputStream(getClass().getResource("musicaFondo.wav"));
 			clip = AudioSystem.getClip();
@@ -85,9 +87,6 @@ public class Juego extends JPanel {
 			e.printStackTrace();
 		}
 	}
-
-
-	
 	
 	public void musica() {
 		if(clip.isActive())
@@ -96,14 +95,11 @@ public class Juego extends JPanel {
 			clip.start();
 	}
 	
-//	public void escribirMensajeEnTextArea(String mensaje) {
-//		textArea.append(mensaje + "\n");
-//	}
-	
 	public void iniciar() {
 		
-		//this.cliente.enviarMensaje("Bienvenidos a Kingdomino!");
+		consola.escribir("Bienvenidos a Kingdomino!");
 		this.jugadores = this.logicaJuego.inicializar(this.pilaSig);
+		consola.escribir("El jugador " + this.jugadores.get(0).getNickName() + " tuvo suerte y le toca primero!");
 	}
 
 	private void crearBotones() {
@@ -189,12 +185,6 @@ public class Juego extends JPanel {
 		
 		//table_1.setBounds(400,800,200,200);
 
-	    //JScrollPane jp = new JScrollPane(this.puntajes);
-	    //jp.setBounds(860,510,200,41*this.cantJugadores);
-	    //jp.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
-	    //jp.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
-	    //jp.setVisible(true);
-	    //add(jp);
 	    add(this.puntajes);
 		((PuntajesModel)this.puntajes.getModel()).actualizarPuntajes();
 	}
@@ -259,16 +249,25 @@ public class Juego extends JPanel {
 				jugadorActual = logicaJuego.devolverTurno();
 				
 				if(!logicaJuego.getEnTablero()) {
-					System.out.println("No seleccionaste ficha todavia");
+					consola.escribir("No seleccionaste ficha todavia");
+					//System.out.println("No seleccionaste ficha todavia");
 					return;
 				}
 
 				if(!jugadorActual.equals(jugador)) {
-					System.out.println("Este tablero no le pertenece al jugador " + jugadorActual.getNickName());
+					consola.escribir("Este tablero no le pertenece al jugador " + jugadorActual.getNickName());
 					return;
 				}
 				
 				Ficha f = logicaJuego.obtenerFicha(jugadorActual);
+				
+				if(!logicaJuego.intentarInsertar(jugadorActual)) {
+					consola.escribir("No es posible insertar la ficha.");
+					logicaJuego.activarPila();
+					logicaJuego.desactivarTablero();
+					return;
+				}
+				
 				Casillero c1 = f.getCasilleros()[0];
 				Casillero c2 = f.getCasilleros()[1];
 				if (table.getValueAt(row, col) == null) {
@@ -283,9 +282,9 @@ public class Juego extends JPanel {
 						
 						if(x == row) {
 							if(y > col) {
-								Casillero aux = c1;
-								c1 = c2;
-								c2 = aux;
+//								Casillero aux = c1;
+//								c1 = c2;
+//								c2 = aux;
 								angulo = 180;
 							}
 							else {
@@ -293,9 +292,9 @@ public class Juego extends JPanel {
 							}
 						} else {
 							if(x > row) {
-								Casillero aux = c1;
-								c1 = c2;
-								c2 = aux;
+//								Casillero aux = c1;
+//								c1 = c2;
+//								c2 = aux;
 								
 								angulo = 270;
 							}
@@ -306,62 +305,64 @@ public class Juego extends JPanel {
 						
 						System.out.println(angulo);
 						
-						f.getCasilleros()[0] = c1;
-						f.getCasilleros()[1] = c2;
+//						if(angulo == 0 || angulo == 90) { 
+//							f.getCasilleros()[0] = c1;
+//							f.getCasilleros()[1] = c2;							
+//						}
 						
-						x = c1.getPosicion().getX();
-						y = c1.getPosicion().getY();
-						row = c2.getPosicion().getX();
-						col = c2.getPosicion().getY();
+//						x = c1.getPosicion().getX();
+//						y = c1.getPosicion().getY();
+//						row = c2.getPosicion().getX();
+//						col = c2.getPosicion().getY();
 
-						Posicion pos1 = new Posicion(x, y);
-						Posicion pos2 = new Posicion(row, col);
+						System.out.println(x + " " + y);
+						System.out.println(row + " " + col);
 						
-						System.out.println(pos1);
-						System.out.println(pos2);
+						//Posicion pos1 = new Posicion(x, y);
+						//Posicion pos2 = new Posicion(row, col);
 						
-						if (sonConsecutivas(pos1,pos2) && jugador.getTablero().posicionar(f)) {
+						if (sonConsecutivas(c1.getPosicion(),c2.getPosicion()) && jugador.getTablero().posicionar(f)) {
 
 							c1.rotate(angulo);
 							c2.rotate(angulo);
 							table.setValueAt(c1, x, y);
 							table.setValueAt(c2,row, col);
 
-							
-							//cliente.enviarMensaje("El jugador " + jugadorActual.getNickName() + " inserto su ficha");
-							System.out.println("El jugador " + jugadorActual.getNickName() + " inserto su ficha");
+							consola.escribir("El jugador " + jugadorActual.getNickName() + " inserto su ficha");
 							
 							if(!logicaJuego.esUltimaRonda()) {
 								logicaJuego.desactivarTablero();
 								logicaJuego.activarPila();								
-								System.out.println("Ahora te toca seleccionar una ficha de la pila de robo!");
+								consola.escribir("Ahora te toca seleccionar una ficha de la pila de robo!");
 							}
 							else {
-								logicaJuego.cambioDeTurno(jugadorActual);
-								
+								logicaJuego.cambioDeTurno(jugadorActual,consola);
 								
 								if(logicaJuego.esfinRonda()) {
 									logicaJuego.cambiarRonda(pilaAct,pilaSig);
 								}
+								
 							}
 							((PuntajesModel)puntajes.getModel()).actualizarPuntajes();
-								
+							
 						} else {
-							System.out.println("Error, no son consecutivas");
+							consola.escribir("Error, no son consecutivas");
 							
 							table.setValueAt(null, x, y);
 							table.setValueAt(null, row, col);
 							
 							c1.setPosicion(null);
 							c2.setPosicion(null);
+							
 						}
 					}else 
 						if (c1.getPosicion() == null && table.getValueAt(row, col) == null) {
+							
 							c1.setPosicion(new Posicion(row, col));
 							table.setValueAt(c1, row, col);
 						}
 				} else {
-					System.out.println("Casillero ocupado");
+					consola.escribir("Casillero ocupado");
 				}
 
 			}
@@ -377,7 +378,7 @@ public class Juego extends JPanel {
 		int row = p2.getX();
 		int col = p2.getY();
 		
-		return (((x + 1 == row || x - 1 == row) && (y == col)) || ((y + 1 == col || y - 1 == col) && (x == row)));
+		return ( ( (Math.abs(x-row) == 1) && (y == col) ) || ( (Math.abs(y-col) == 1) && (x == row) ) );
 	}
 	
 	public void actualizarMarcaFichaPila() {
@@ -406,16 +407,14 @@ public class Juego extends JPanel {
 		tabla.getModel().setValueAt(casillero, x, y);
 	}
 
-	public ImageIcon escalarImagen(ImageIcon imagen, int width, int heigth) {
-		return new ImageIcon(imagen.getImage().getScaledInstance(width, heigth, java.awt.Image.SCALE_SMOOTH));
-	}
-
 	public ImageIcon escalarImagen(Image imagen, int width, int heigth) {
 		return new ImageIcon(imagen.getScaledInstance(width, heigth, java.awt.Image.SCALE_SMOOTH));
 	}
 	
 	public void agregarFicha(Ficha f) {
-		this.logicaJuego.agregarFicha(jugadorActual,f);
+		if(!this.logicaJuego.agregarFicha(jugadorActual,f,this.consola))
+			this.consola.escribir("Ficha ocupada");
+		
 	}
 	
 	private void agregarListener() {
@@ -427,7 +426,7 @@ public class Juego extends JPanel {
 				int col = pilaSig.columnAtPoint(event.getPoint());
 
 				if(!logicaJuego.getEnPila()) {
-					System.out.println("No se puede seleccionar fichas ya!");
+					consola.escribir("No se puede seleccionar fichas ya!");
 					return;
 				}
 				
@@ -438,16 +437,25 @@ public class Juego extends JPanel {
 					agregarFicha(((PilaModel)pilaSig.getModel()).getFichaAt(row,col));
 				}
 				else
-					System.out.println("Pila no accesible todavia");
+					consola.escribir("Pila no accesible todavia");
 				
 				if(logicaJuego.esfinRonda()) {
 					
 					if(logicaJuego.esRondaPreliminar()) {
 						dibujarPilaSig();
 					}
+					else {
+						consola.escribir("-------------Fin de ronda " + logicaJuego.getRonda() +  "-------------");						
+					}
 					
 					logicaJuego.cambiarRonda(pilaAct,pilaSig);
-					
+					if(logicaJuego.esFinJuego()) {
+						consola.escribir("FIN JUEGO");
+						((PuntajesModel)puntajes.getModel()).actualizarPuntajes();
+						return;
+					}
+					consola.escribir("-----------Comienzo de ronda " + logicaJuego.getRonda() + "-----------");
+					consola.escribir("Es el momento de insertar las fichas seleccionadas!");
 					actualizarMarcaFichaPila();
 					
 					if(logicaJuego.esUltimaRonda()) {
