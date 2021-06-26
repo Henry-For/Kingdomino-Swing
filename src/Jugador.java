@@ -35,7 +35,7 @@ public class Jugador implements Comparable<Jugador>{
 		return fichas.get(numFicha);
 	}
 	
-	private void obtenerPuntaje() {
+	public void obtenerPuntaje() {
 		
 		this.puntaje = this.tablero.calcularPuntaje();
 	}

@@ -73,6 +73,8 @@ public class Game {
 		
 		consola.escribir("El jugador " + j.getNickName() + " seleccionó una ficha");
 		
+		//j.obtenerPuntaje();
+		
 		this.cambioDeTurno(j,consola);
 		
 		if(this.ronda != 0) {
@@ -120,11 +122,12 @@ public class Game {
 		
 		this.jugadoresActuales = this.pilaDeRoboActual.getJugadoresOrdenados().iterator();
 		
-		this.pilaDeRoboSiguiente = new PilaDeRobo();
-		this.pilaDeRoboSiguiente.setTable(siguiente);
-		this.pilaDeRoboSiguiente.almacenarFichas(this.mazo.devolverFichas());
-		this.pilaDeRoboSiguiente.redibujar();
-		
+		if(this.ronda != Game.CANT_RONDAS) {
+			this.pilaDeRoboSiguiente = new PilaDeRobo();
+			this.pilaDeRoboSiguiente.setTable(siguiente);
+			this.pilaDeRoboSiguiente.almacenarFichas(this.mazo.devolverFichas());
+			this.pilaDeRoboSiguiente.redibujar();			
+		}
 		Jugador primero = this.jugadoresActuales.next();
 		primero.setTurno(true);
 		
@@ -206,5 +209,15 @@ public class Game {
 
 	public boolean esFinJuego() {
 		return this.ronda == Game.CANT_RONDAS+1;
+	}
+	
+	public boolean posicionarFicha(Jugador j,Ficha f) {
+		
+		if(!j.getTablero().posicionar(f))
+			return false;
+		
+		j.obtenerPuntaje();
+		
+		return true;
 	}
 }

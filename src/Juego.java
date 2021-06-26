@@ -57,22 +57,7 @@ public class Juego extends JPanel {
 		setLayout(null);
 		setBounds(100, 100, 1920, 1080);
 		
-		JButton btnNewButton = new JButton("Musica");
-		btnNewButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				musica();
-			}
-		});
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
-		btnNewButton.setBounds(906, 11, 89, 23);
-		add(btnNewButton);
-		
 		this.consola = new Consola(760,754,new JTextArea());
-		
 		add(this.consola);
 		
 		try {
@@ -114,6 +99,35 @@ public class Juego extends JPanel {
 			
 			offset += 90;
 		}
+		
+		JButton btnNewButton = new JButton("Musica");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				musica();
+			}
+		});
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		
+		btnNewButton.setBounds(906, 11, 89, 23);
+		add(btnNewButton);
+		
+		JButton descarte = new JButton("Descartar ficha");
+		descarte.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if(logicaJuego.getEnTablero())
+					avanzar();
+				else
+					consola.escribir("Solo utilizable cuando necesites descartar una ficha");
+			}
+		});
+		
+		descarte.setBounds(885,680,150,40);
+		add(descarte);
 	}
 	
 	private void crearPilas() {
@@ -282,9 +296,7 @@ public class Juego extends JPanel {
 						
 						if(x == row) {
 							if(y > col) {
-//								Casillero aux = c1;
-//								c1 = c2;
-//								c2 = aux;
+
 								angulo = 180;
 							}
 							else {
@@ -292,9 +304,6 @@ public class Juego extends JPanel {
 							}
 						} else {
 							if(x > row) {
-//								Casillero aux = c1;
-//								c1 = c2;
-//								c2 = aux;
 								
 								angulo = 270;
 							}
@@ -304,24 +313,11 @@ public class Juego extends JPanel {
 						}
 						
 						System.out.println(angulo);
-						
-//						if(angulo == 0 || angulo == 90) { 
-//							f.getCasilleros()[0] = c1;
-//							f.getCasilleros()[1] = c2;							
-//						}
-						
-//						x = c1.getPosicion().getX();
-//						y = c1.getPosicion().getY();
-//						row = c2.getPosicion().getX();
-//						col = c2.getPosicion().getY();
 
 						System.out.println(x + " " + y);
 						System.out.println(row + " " + col);
 						
-						//Posicion pos1 = new Posicion(x, y);
-						//Posicion pos2 = new Posicion(row, col);
-						
-						if (sonConsecutivas(c1.getPosicion(),c2.getPosicion()) && jugador.getTablero().posicionar(f)) {
+						if (sonConsecutivas(c1.getPosicion(),c2.getPosicion()) && logicaJuego.posicionarFicha(jugadorActual,f)) {
 
 							c1.rotate(angulo);
 							c2.rotate(angulo);
@@ -330,20 +326,10 @@ public class Juego extends JPanel {
 
 							consola.escribir("El jugador " + jugadorActual.getNickName() + " inserto su ficha");
 							
-							if(!logicaJuego.esUltimaRonda()) {
-								logicaJuego.desactivarTablero();
-								logicaJuego.activarPila();								
-								consola.escribir("Ahora te toca seleccionar una ficha de la pila de robo!");
-							}
-							else {
-								logicaJuego.cambioDeTurno(jugadorActual,consola);
-								
-								if(logicaJuego.esfinRonda()) {
-									logicaJuego.cambiarRonda(pilaAct,pilaSig);
-								}
-								
-							}
 							((PuntajesModel)puntajes.getModel()).actualizarPuntajes();
+							
+							if(!avanzar())
+								return;
 							
 						} else {
 							consola.escribir("Error, no son consecutivas");
@@ -371,6 +357,26 @@ public class Juego extends JPanel {
 		return table;
 	}
 	
+	public boolean avanzar() {
+		
+		if(!logicaJuego.esUltimaRonda()) {
+			logicaJuego.desactivarTablero();
+			logicaJuego.activarPila();								
+			consola.escribir("Ahora te toca seleccionar una ficha de la pila de robo!");
+		}
+		else {
+
+			logicaJuego.cambioDeTurno(jugadorActual,consola);
+			
+			if(logicaJuego.esfinRonda()) {
+				
+				consola.escribir("FIN JUEGO");
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public boolean sonConsecutivas(Posicion p1, Posicion p2) {
 		
 		int x = p1.getX();
@@ -396,6 +402,7 @@ public class Juego extends JPanel {
 			pos++;
 		}
 	}
+	
 
 	public void agregarCasillero(JTable tabla, int x, int y, Casillero casillero, double rotacion) {
 		if (casillero == null) {
@@ -435,6 +442,7 @@ public class Juego extends JPanel {
 				
 				if (!logicaJuego.getEnTablero() && pilaSig.getValueAt(row, col) != null) {
 					agregarFicha(((PilaModel)pilaSig.getModel()).getFichaAt(row,col));
+					//((PuntajesModel)puntajes.getModel()).actualizarPuntajes();
 				}
 				else
 					consola.escribir("Pila no accesible todavia");
@@ -449,11 +457,7 @@ public class Juego extends JPanel {
 					}
 					
 					logicaJuego.cambiarRonda(pilaAct,pilaSig);
-					if(logicaJuego.esFinJuego()) {
-						consola.escribir("FIN JUEGO");
-						((PuntajesModel)puntajes.getModel()).actualizarPuntajes();
-						return;
-					}
+
 					consola.escribir("-----------Comienzo de ronda " + logicaJuego.getRonda() + "-----------");
 					consola.escribir("Es el momento de insertar las fichas seleccionadas!");
 					actualizarMarcaFichaPila();
