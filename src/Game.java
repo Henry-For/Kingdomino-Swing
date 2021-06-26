@@ -107,7 +107,7 @@ public class Game {
 			this.desactivarTablero();
 			System.out.println("FIN JUEGO");
 			this.obtenerGanadores();
-			Jugador.mostrarJugadores(jugadores);
+			//Jugador.mostrarJugadores(jugadores);
 			return;
 		}
 		

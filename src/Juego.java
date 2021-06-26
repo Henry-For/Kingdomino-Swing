@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import java.awt.Font;
 
 public class Juego extends JPanel {
 
+	private JButton botonFinalizarJuego = new JButton("FinalizarJuego");
+	
 	private static final long serialVersionUID = 1L;
 	private JTable[] tableros;
 	
@@ -35,7 +38,8 @@ public class Juego extends JPanel {
 	public Juego(ArrayList<Jugador> jugadores) {
 		this.jugadores = jugadores;
 		this.cantJugadores = jugadores.size();
-		
+		botonFinalizarJuego.setBounds(124, 699, 146, 39);
+		add(botonFinalizarJuego);
 		this.crearTablas();
 		this.crearBotones();
 		this.crearPilas();
@@ -49,6 +53,14 @@ public class Juego extends JPanel {
 	public void iniciar() {
 		
 		this.jugadores = this.logicaJuego.inicializar(pilaSig);
+		
+		// Yo supongo que aca deberia funcionar no tuve manera de probarlo, pero deberian poner el doClick del boton en algun punto donde se termine el juego para que muestr el panel con los jugadores y poner en invisible el boton.
+		botonFinalizarJuego.doClick();
+	}
+	
+	public void botonIniciarJuegoActionListener(ActionListener listener) {
+		botonFinalizarJuego.addActionListener(listener);
+		
 	}
 
 	private void crearBotones() {
@@ -60,7 +72,6 @@ public class Juego extends JPanel {
 			this.botones[i].setVisible(false);
 			this.botones[i].setBounds(630, 150+offset, 50, 50);
 			add(this.botones[i]);
-			
 			offset += 90;
 		}
 	}

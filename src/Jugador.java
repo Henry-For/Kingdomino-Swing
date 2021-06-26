@@ -96,6 +96,10 @@ public class Jugador implements Comparable<Jugador>{
 		return "Jugador [ "+"nickName=" + nickName + ", puntaje=" + puntaje + "]";
 	}
 	
+	public String toStringPuntajes() {
+		return nickName + "                      " + puntaje ;
+	}
+	
 	public boolean getTurno() {
 		return turno;
 	}
