@@ -71,7 +71,7 @@ public class Jugador implements Comparable<Jugador>{
 		Collections.shuffle(jugadores, new Random());
 	}
 	
-	public static void ordenarJugadoresPuntaje(ArrayList<Jugador> jugadores) {
+	public static void ordenarJugadoresPuntaje(List<Jugador> jugadores) {
 		Collections.sort(jugadores,Collections.reverseOrder());
 	}
 

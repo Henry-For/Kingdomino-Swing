@@ -1,11 +1,16 @@
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.border.MatteBorder;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -16,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.awt.Font;
+import javax.swing.JScrollBar;
+import static javax.swing.ScrollPaneConstants.*;
 
 public class Juego extends JPanel {
 
@@ -31,7 +38,12 @@ public class Juego extends JPanel {
 	
 	private JButton botones[] = new JButton[4];
 	private Game logicaJuego;
-
+	private JTable puntajes;
+	private JTable table_1;
+	//private Cliente cliente;
+	//private Servidor server;
+	//private JTextArea textArea;
+	
 	public Juego(ArrayList<Jugador> jugadores) {
 		this.jugadores = jugadores;
 		this.cantJugadores = jugadores.size();
@@ -39,16 +51,42 @@ public class Juego extends JPanel {
 		this.crearTablas();
 		this.crearBotones();
 		this.crearPilas();
+		//this.server = new Servidor(50000);
+		//this.server.start();
 		
-		this.logicaJuego = new Game(jugadores);
+		//this.cliente = new Cliente(50000,"localhost");
 
+		this.logicaJuego = new Game(jugadores);
+		
 		setLayout(null);
 		setBounds(100, 100, 1920, 1080);
+		
+//		DefaultTableModel model = new DefaultTableModel();
+//	    table_1 = new JTable(model);
+//	    table_1.setFont(new Font("Times New Roman", Font.PLAIN, 13));
+//	    model.addColumn("ID");
+//	    model.addColumn("NAME");
+//	    model.addColumn("MODEL");
+//	    model.addColumn("P_Price");
+//	    model.addColumn("S_Price");
+//	    model.addColumn("Quantity");
+//	    model.addRow(new Object[] {null,null});
+//	    table_1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+//		add(table_1);
+
+		//this.textArea = new JTextArea();
+		//textArea.setBounds(720, 526, 517, 219);
+		//add(textArea);
 	}
+	
+//	public void escribirMensajeEnTextArea(String mensaje) {
+//		textArea.append(mensaje + "\n");
+//	}
 	
 	public void iniciar() {
 		
-		this.jugadores = this.logicaJuego.inicializar(pilaSig);
+		//this.cliente.enviarMensaje("Bienvenidos a Kingdomino!");
+		this.jugadores = this.logicaJuego.inicializar(this.pilaSig);
 	}
 
 	private void crearBotones() {
@@ -106,12 +144,14 @@ public class Juego extends JPanel {
 								{465,540}
 		};
 		
+		String[] colores = {"rojo","azul","verde","amarillo"};
+		
 		int i = 0;
 		for (Jugador jugador : jugadores) {
 			
 			this.tableros[i] = crearTabla(posicionesTablero[i][0],posicionesTablero[i][1], jugador.getColor(), jugador);
 			
-			jugador.getTablero().agregarCastillo("Fichas/castillo_rojo.jpg");
+			jugador.getTablero().agregarCastillo("Fichas/castillo_"+ colores[i] +".jpg");
 			jugador.agregarTable(this.tableros[i]);
 			
 			agregarCasillero(this.tableros[i], 2, 2, jugador.getTablero().getCastillo(), 0);
@@ -126,6 +166,44 @@ public class Juego extends JPanel {
 
 			i++;
 		}
+		
+		this.puntajes = this.crearPuntajes(860,510,Color.WHITE,this.cantJugadores);
+		
+		//table_1.setBounds(400,800,200,200);
+
+	    //JScrollPane jp = new JScrollPane(this.puntajes);
+	    //jp.setBounds(860,510,200,41*this.cantJugadores);
+	    //jp.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
+	    //jp.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER);
+	    //jp.setVisible(true);
+	    //add(jp);
+	    add(this.puntajes);
+		((PuntajesModel)this.puntajes.getModel()).actualizarPuntajes();
+	}
+	
+	@SuppressWarnings("deprecation")
+	private JTable crearPuntajes(int x,int y, Color color,int cantJugadores) {
+		
+		//DefaultTableModel model = new DefaultTableModel(cantJugadores,2);
+		JTable table = new JTable(new PuntajesModel(this.jugadores)) {
+			private static final long serialVersionUID = 1L;
+
+			public boolean editCellAt(int row, int column, java.util.EventObject e) {
+	            return false;
+	         }
+		};
+		
+		table.setRowSelectionAllowed(false);
+		table.setRowHeight(30);
+		table.getColumnModel().getColumn(0).setPreferredWidth(98);
+		table.getColumnModel().getColumn(1).setPreferredWidth(98);
+		table.enable(false);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setBounds(x, y, 200,30*cantJugadores);
+		table.setBorder(new MatteBorder(2, 2, 2, 2, color));
+		table.setBackground(new ColorUIResource(164, 95, 51));
+		table.setBorder(new MatteBorder(2, 2, 2, 2, Color.BLACK));
+		return table;
 	}
 
 	private JTable crearTabla(int x, int y, Color color, Jugador jugador) {
@@ -222,11 +300,25 @@ public class Juego extends JPanel {
 							table.setValueAt(c1, x, y);
 							table.setValueAt(c2,row, col);
 
-							logicaJuego.desactivarTablero();
-							logicaJuego.activarPila();
 							
+							//cliente.enviarMensaje("El jugador " + jugadorActual.getNickName() + " inserto su ficha");
 							System.out.println("El jugador " + jugadorActual.getNickName() + " inserto su ficha");
-							System.out.println("Ahora te toca seleccionar una ficha de la pila de robo!");
+							
+							if(!logicaJuego.esUltimaRonda()) {
+								logicaJuego.desactivarTablero();
+								logicaJuego.activarPila();								
+								System.out.println("Ahora te toca seleccionar una ficha de la pila de robo!");
+							}
+							else {
+								logicaJuego.cambioDeTurno(jugadorActual);
+								
+								
+								if(logicaJuego.esfinRonda()) {
+									logicaJuego.cambiarRonda(pilaAct,pilaSig);
+								}
+							}
+							((PuntajesModel)puntajes.getModel()).actualizarPuntajes();
+								
 						} else {
 							System.out.println("Error, no son consecutivas");
 							
@@ -328,7 +420,12 @@ public class Juego extends JPanel {
 					}
 					
 					logicaJuego.cambiarRonda(pilaAct,pilaSig);
+					
 					actualizarMarcaFichaPila();
+					
+					if(logicaJuego.esUltimaRonda()) {
+						pilaSig.setVisible(false);
+					}
 				}
 			}
 		});
