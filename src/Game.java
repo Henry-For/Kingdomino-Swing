@@ -9,7 +9,7 @@ import javax.swing.JTable;
 public class Game {
 	
 	private ArrayList<Jugador> jugadores;
-	private final static int CANT_RONDAS = 2;
+	private final static int CANT_RONDAS = 12;
 	private PilaDeRobo pilaDeRoboActual;
 	private PilaDeRobo pilaDeRoboSiguiente;
 	private Mazo mazo;

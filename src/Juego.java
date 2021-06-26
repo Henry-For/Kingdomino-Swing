@@ -210,6 +210,9 @@ public class Juego extends JPanel {
 						
 						System.out.println(angulo);
 						
+						f.getCasilleros()[0] = c1;
+						f.getCasilleros()[1] = c2;
+						
 						x = c1.getPosicion().getX();
 						y = c1.getPosicion().getY();
 						row = c2.getPosicion().getX();
@@ -221,7 +224,7 @@ public class Juego extends JPanel {
 						System.out.println(pos1);
 						System.out.println(pos2);
 						
-						if (sonConsecutivas(pos1,pos2) && jugador.getTablero().posicionarFicha(f)) {
+						if (sonConsecutivas(pos1,pos2) && jugador.getTablero().posicionar(f)) {
 
 							c1.rotate(angulo);
 							c2.rotate(angulo);

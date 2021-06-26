@@ -16,7 +16,7 @@ public class Tablero {
 		this.tablero = tablero;
 	}
 
-	public boolean posicionarFicha(Ficha f) {
+	public boolean posicionar(Ficha f) {
 		if (tieneTerrenoCorrelativo(f)) {
 			tablero[f.getCasilleros()[0].getPosicion().getX()][f.getCasilleros()[0].getPosicion().getY()] = f.getCasilleros()[0];
 			tablero[f.getCasilleros()[1].getPosicion().getX()][f.getCasilleros()[1].getPosicion().getY()] = f.getCasilleros()[1];
