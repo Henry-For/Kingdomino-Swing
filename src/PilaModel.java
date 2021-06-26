@@ -8,9 +8,9 @@ public class PilaModel extends DefaultTableModel {
 	private static final long serialVersionUID = 1L;
 	private List<Ficha> fichas;
 	
-	public PilaModel(int cantJugadores) {
-		super(cantJugadores,2);
-		this.fichas = new ArrayList<Ficha>(cantJugadores);
+	public PilaModel() {
+		super(4,2);
+		this.fichas = new ArrayList<Ficha>(4);
 	}
 
 	public void insertarFicha(Ficha f) {

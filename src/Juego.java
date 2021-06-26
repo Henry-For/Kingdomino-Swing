@@ -142,10 +142,10 @@ public class Juego extends JPanel {
 		lblPilaSig.setBounds(996, 87, 241, 32);
 		add(lblPilaSig);
 		
-		this.pilaAct = new PilaTable(1020,130,this.cantJugadores);
+		this.pilaAct = new PilaTable(1020,130);
 		this.pilaAct.setVisible(false);
 
-		this.pilaSig = new PilaTable(720,130,this.cantJugadores);
+		this.pilaSig = new PilaTable(720,130);
 		this.agregarListener();
 		
 		add(this.pilaAct);
@@ -472,8 +472,8 @@ public class Juego extends JPanel {
 
 	public void dibujarPilaSig() {
 		
-		this.pilaSig.setBounds(1020, 130, 180, 90*this.cantJugadores);
-		this.pilaAct.setBounds(720, 130, 180, 90*this.cantJugadores);
+		this.pilaSig.setBounds(1020, 130, 180, 360);
+		this.pilaAct.setBounds(720, 130, 180, 360);
 		this.pilaAct.setVisible(true);
 	}
 }

@@ -6,9 +6,9 @@ public class PilaTable extends JTable{
 
 	private static final long serialVersionUID = 1L;
 
-	public PilaTable(int x, int y, int cantJugadores) {
+	public PilaTable(int x, int y) {
 		
-		super(new PilaModel(cantJugadores));
+		super(new PilaModel());
 		super.setRowSelectionAllowed(false);
 		super.setRowHeight(90);
 		super.getColumnModel().getColumn(0).setCellRenderer(new Renderer());
@@ -16,7 +16,7 @@ public class PilaTable extends JTable{
 		super.getColumnModel().getColumn(0).setPreferredWidth(90);
 		super.getColumnModel().getColumn(1).setPreferredWidth(90);
 		super.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		super.setBounds(x, y, 180, 90*cantJugadores);
+		super.setBounds(x, y, 180, 360);
 	}
 	
 	@Override
