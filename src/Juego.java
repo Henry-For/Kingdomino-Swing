@@ -1,4 +1,8 @@
 import javax.swing.JPanel;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -11,6 +15,7 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +49,16 @@ public class Juego extends JPanel {
 
 		setLayout(null);
 		setBounds(100, 100, 1920, 1080);
+		
+		try {
+			AudioInputStream ais = AudioSystem.getAudioInputStream(getClass().getResource("musicaFondo.wav"));
+			Clip clip = AudioSystem.getClip();
+			clip.open(ais);
+			clip.setFramePosition(0);
+			clip.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void iniciar() {
@@ -85,6 +100,7 @@ public class Juego extends JPanel {
 		
 		add(this.pilaAct);
 		add(this.pilaSig);
+		
 	}
 	
 	private void crearTablas() {
